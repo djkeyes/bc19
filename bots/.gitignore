@@ -3,3 +3,6 @@
 
 # WebStorm project files
 .idea/
+
+# generated emscripten files
+*/*_GENERATED.js
