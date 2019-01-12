@@ -48,6 +48,13 @@ endforeach ()
 message("settings: ${EMSCRIPTEN_SETTINGS_STRING}")
 set_target_properties(${ARTIFACT_NAME} PROPERTIES LINK_FLAGS "${EMSCRIPTEN_SETTINGS_STRING}")
 
+# just disable exceptions
+target_compile_options(${ARTIFACT_NAME} PUBLIC -fno-exceptions)
+# TODO: Disable exceptions and rtti. This breaks some features of embind, so we need to fix those.
+## disable exceptions and rtti
+#target_compile_definitions(${ARTIFACT_NAME} PUBLIC -DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0)
+#target_compile_options(${ARTIFACT_NAME} PUBLIC -fno-exceptions -fno-rtti)
+
 # make the format "X.js" instead of "libX.so"
 set_target_properties(${ARTIFACT_NAME} PROPERTIES PREFIX "")
 set_target_properties(${ARTIFACT_NAME} PROPERTIES SUFFIX ".js")
