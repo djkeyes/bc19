@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # this has to be in a different directory from the source to prevent bc19run from failing
 # TODO(daniel): convert this to a CMakeLists.txt
