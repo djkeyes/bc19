@@ -20,8 +20,33 @@ set(SRC_FILES
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})
 
-# emscripten flags starting with -s must listed here, since they contain whitespace
-set_target_properties(${ARTIFACT_NAME} PROPERTIES LINK_FLAGS "-s WASM=1 -s NO_EXIT_RUNTIME=1 -s EXPORTED_FUNCTIONS='[]' -s EXTRA_EXPORTED_RUNTIME_METHODS='[]' --bind -s SINGLE_FILE -s EXPORT_ES6 -s MODULARIZE -s ENVIRONMENT_MAY_BE_WEB=0 -s ENVIRONMENT_MAY_BE_WORKER=0 -s ENVIRONMENT_MAY_BE_NODE=0 -s ENVIRONMENT_MAY_BE_SHELL=0 -s ENVIRONMENT_MAY_BE_WEB_OR_WORKER=0 -s BINARYEN_ASYNC_COMPILATION=0 -s TOTAL_MEMORY=${MEMORY_LIMIT}")
+# Flags listed here are concatenated into a list and passed to the emscripten linker.
+# Emscripten flags starting with -s must listed here, since they contain whitespace.
+set(EMSCRIPTEN_SETTINGS
+        "-s WASM"
+        "--bind" # for embind
+        "-s SINGLE_FILE" # encodes wasm file as embedded hex string
+        "-s EXPORT_ES6" # ES6-style imports
+        "-s MODULARIZE" # required for EXPORT_ES6
+        "-s BINARYEN_ASYNC_COMPILATION=0" # disable async module loading, since BC19 is synchronous
+        "-s TOTAL_MEMORY=${MEMORY_LIMIT}"
+        # disable as much as possible
+        "-s NO_EXIT_RUNTIME=1"
+        "-s EXPORTED_FUNCTIONS='[]'"
+        "-s EXTRA_EXPORTED_RUNTIME_METHODS='[]'"
+        # TODO: are these actually applied?
+        "-s ENVIRONMENT_MAY_BE_WEB=0"
+        "-s ENVIRONMENT_MAY_BE_WORKER=0"
+        "-s ENVIRONMENT_MAY_BE_NODE=0"
+        "-s ENVIRONMENT_MAY_BE_SHELL=0"
+        "-s ENVIRONMENT_MAY_BE_WEB_OR_WORKER=0")
+
+set(EMSCRIPTEN_SETTINGS_STRING "")
+foreach (SINGLE_SETTING ${EMSCRIPTEN_SETTINGS})
+    set(EMSCRIPTEN_SETTINGS_STRING "${EMSCRIPTEN_SETTINGS_STRING} ${SINGLE_SETTING}")
+endforeach ()
+message("settings: ${EMSCRIPTEN_SETTINGS_STRING}")
+set_target_properties(${ARTIFACT_NAME} PROPERTIES LINK_FLAGS "${EMSCRIPTEN_SETTINGS_STRING}")
 
 # make the format "X.js" instead of "libX.so"
 set_target_properties(${ARTIFACT_NAME} PROPERTIES PREFIX "")
