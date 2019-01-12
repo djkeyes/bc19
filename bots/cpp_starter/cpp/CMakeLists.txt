@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.9...3.13)
 
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
+if (${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-endif()
+endif ()
 
 project(cpp_starter VERSION 0.1
         LANGUAGES CXX C)
