@@ -15,7 +15,10 @@ set(MEMORY_LIMIT 67108864)
 set(ARTIFACT_NAME wasm_lib_GENERATED)
 
 set(SRC_FILES
-        cpp_starter.cpp)
+        cpp_starter.cpp
+        cpp_starter.h
+        my_robot.cpp
+        fast_rand.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})

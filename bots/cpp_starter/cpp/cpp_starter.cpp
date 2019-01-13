@@ -1,21 +1,10 @@
 
 #include <emscripten/bind.h>
 
-using emscripten::val;
+#include "cpp_starter.h"
+
 using emscripten::class_;
-
-class NativeRobot {
- private:
-  // TODO: I think this is reference counted. Does it ever get deallocated?
-  val jsRobot_;
-
- public:
-  explicit NativeRobot(val jsRobot) : jsRobot_(jsRobot) {}
-
-  void turn() {
-
-  }
-};
+using emscripten::val;
 
 // Binding code
 EMSCRIPTEN_BINDINGS(my_robot_example) { // NOLINT
