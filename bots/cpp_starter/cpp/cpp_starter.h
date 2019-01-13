@@ -7,8 +7,99 @@
 
 // TODO: how fast is the js-native boundary layer? is it faster to copy values?
 
+// TODO: this contains some hardcoded values. write a script to populate these constants from the game specs.
+
 namespace bc19 {
 namespace specs {
+
+/**
+ * The amount of bits that can be used when signaling (default: 16).
+ */
+constexpr int communication_bits = 16;
+
+/**
+ * The amount of bits that can be used when sending a message to the castles (default: 8).
+ */
+constexpr int castle_talk_bits = 8;
+
+/**
+ * The maximum amount of rounds this game can take (default: 1000).
+ */
+constexpr int max_rounds = 1000;
+
+/**
+ * The amount of fuel that is given per turn (default: 25).
+ */
+constexpr int trickle_fuel = 25;
+
+/**
+ * The initial amount of karbonite every player starts with (default: 100).
+ */
+constexpr int initial_karbonite = 100;
+
+/**
+ * The initial amount of fuel every player starts with (default: 500).
+ */
+constexpr int initial_fuel = 500;
+
+/**
+ * The amount of fuel it costs to mine once (default: 1).
+ */
+constexpr int mine_fuel_cost = 1;
+
+/**
+ * The amount of karbonite that can be mined from fields with karbonite (default: 2).
+ */
+constexpr int karbonite_yield = 2;
+
+/**
+ * The amount of karbonite that can be mined from fields with fuel (default: 10).
+ */
+constexpr int fuel_yield = 10;
+
+/**
+ * The maximum amount of goods that can be traded in a single turn (default: 1024).
+ */
+constexpr int max_trade = 1024;
+
+/**
+ * The maximum board size (default: 64).
+ */
+constexpr int max_board_size = 64;
+
+/**
+ * The maximum id of a unit (default: 4096).
+ */
+constexpr int max_id = 4096;
+
+/**
+ * The id of the red team (default: 0).
+ */
+constexpr int red = 1;
+
+/**
+ * The id of the blue team (default: 1).
+ */
+constexpr int blue = 1;
+
+/**
+ * The initial amount of milliseconds that is given to every robot (default: 100).
+ */
+constexpr int chess_initial = 100;
+
+/**
+ * The amount of extra milliseconds that a robot is given every turn (default: 20).
+ */
+constexpr int chess_extra = 20;
+
+/**
+ * The maximum amount of memory your robot can use in bytes (default: 50000000).
+ *
+ * At the time of writing, this limit is not enforced.
+ * It is unclear whether this will change later in the competition.
+ */
+constexpr int max_memory = 50000000;
+
 enum class Unit : int {
   CASTLE = 0,
   CHURCH,
@@ -18,6 +109,162 @@ enum class Unit : int {
   PREACHER,
   UNDEFINED
 };
+
+struct UnitSpecs {
+
+  /**
+   * The amount of karbonite it costs to construct this unit.
+   */
+  const int construction_karbonite;
+
+  /**
+   * The amount of fuel it costs to construct this unit.
+   */
+  const int construction_fuel;
+
+  /**
+   * The amount of karbonite this unit can carry.
+   */
+  const int karbonite_capacity;
+
+  /**
+   * The amount of fuel this unit can carry.
+   */
+  const int fuel_capacity;
+
+  /**
+   * The speed of this unit. 0 if this unit can't move.
+   */
+  const int speed;
+
+  /**
+   * The amount of fuel this unit needs per move.
+   */
+  const int fuel_per_move;
+
+  /**
+   * The amount of hp this unit starts with.
+   */
+  const int starting_hp;
+
+  /**
+   * The distance this unit can see.
+   */
+  const int vision_radius;
+
+  /**
+   * The amount of damage this unit does when attacking.
+   */
+  const int attack_damage;
+
+  /**
+   * An array specifying the minimum and maximum distance in which this unit can attack.
+   */
+  const std::array<int, 2> attack_radius;
+
+  /**
+   * The amount of fuel it takes for this unit to attack.
+   */
+  const int attack_fuel_cost;
+
+  /**
+   * How big the spread of this unit is when attacking.
+   */
+  const int damage_spread;
+};
+
+/**
+ * An array of specs of all the different units.
+ *
+ * The index is the id of the unit as specified in the {@link SPECS}, like {@link PILGRIM} and {@link CRUSADER}.
+ */
+constexpr std::array<UnitSpecs, 6> units =
+    {{
+         {
+             /*CONSTRUCTION_KARBONITE*/ -1,
+             /*CONSTRUCTION_FUEL*/ -1,
+             /*KARBONITE_CAPACITY*/ -1,
+             /*FUEL_CAPACITY*/ -1,
+             /*SPEED*/ 0,
+             /*FUEL_PER_MOVE*/ -1,
+             /*STARTING_HP*/ 100,
+             /*VISION_RADIUS*/ 100,
+             /*ATTACK_DAMAGE*/ -1,
+             /*ATTACK_RADIUS*/ {{-1, -1}},
+             /*ATTACK_FUEL_COST*/ -1,
+             /*DAMAGE_SPREAD*/ -1
+         },
+         {
+             /*CONSTRUCTION_KARBONITE*/ 50,
+             /*CONSTRUCTION_FUEL*/ 200,
+             /*KARBONITE_CAPACITY*/ -1,
+             /*FUEL_CAPACITY*/ -1,
+             /*SPEED*/ 0,
+             /*FUEL_PER_MOVE*/ -1,
+             /*STARTING_HP*/ 50,
+             /*VISION_RADIUS*/ 100,
+             /*ATTACK_DAMAGE*/ -1,
+             /*ATTACK_RADIUS*/ {{-1, -1}},
+             /*ATTACK_FUEL_COST*/ -1,
+             /*DAMAGE_SPREAD*/ -1
+         },
+         {
+             /*CONSTRUCTION_KARBONITE*/ 10,
+             /*CONSTRUCTION_FUEL*/ 50,
+             /*KARBONITE_CAPACITY*/ 20,
+             /*FUEL_CAPACITY*/ 100,
+             /*SPEED*/ 4,
+             /*FUEL_PER_MOVE*/ 1,
+             /*STARTING_HP*/ 10,
+             /*VISION_RADIUS*/ 100,
+             /*ATTACK_DAMAGE*/ -1,
+             /*ATTACK_RADIUS*/ {{-1, -1}},
+             /*ATTACK_FUEL_COST*/ -1,
+             /*DAMAGE_SPREAD*/ -1
+         },
+         {
+             /*CONSTRUCTION_KARBONITE*/ 20,
+             /*CONSTRUCTION_FUEL*/ 50,
+             /*KARBONITE_CAPACITY*/ 20,
+             /*FUEL_CAPACITY*/ 100,
+             /*SPEED*/ 9,
+             /*FUEL_PER_MOVE*/ 1,
+             /*STARTING_HP*/ 40,
+             /*VISION_RADIUS*/ 36,
+             /*ATTACK_DAMAGE*/ 10,
+             /*ATTACK_RADIUS*/ {{1, 16}},
+             /*ATTACK_FUEL_COST*/ 10,
+             /*DAMAGE_SPREAD*/ 0
+         },
+         {
+             /*CONSTRUCTION_KARBONITE*/ 25,
+             /*CONSTRUCTION_FUEL*/ 50,
+             /*KARBONITE_CAPACITY*/ 20,
+             /*FUEL_CAPACITY*/ 100,
+             /*SPEED*/ 4,
+             /*FUEL_PER_MOVE*/ 2,
+             /*STARTING_HP*/ 20,
+             /*VISION_RADIUS*/ 64,
+             /*ATTACK_DAMAGE*/ 10,
+             /*ATTACK_RADIUS*/ {{16, 64}},
+             /*ATTACK_FUEL_COST*/ 25,
+             /*DAMAGE_SPREAD*/ 0
+         },
+         {
+             /*CONSTRUCTION_KARBONITE*/ 30,
+             /*CONSTRUCTION_FUEL*/ 50,
+             /*KARBONITE_CAPACITY*/ 20,
+             /*FUEL_CAPACITY*/ 100,
+             /*SPEED*/ 4,
+             /*FUEL_PER_MOVE*/ 3,
+             /*STARTING_HP*/ 60,
+             /*VISION_RADIUS*/ 16,
+             /*ATTACK_DAMAGE*/ 20,
+             /*ATTACK_RADIUS*/ {{1, 16}},
+             /*ATTACK_FUEL_COST*/ 15,
+             /*DAMAGE_SPREAD*/ 3
+         }
+     }};
 }
 
 class Robot {
@@ -115,9 +362,11 @@ class Robot {
   /**
    * The turn count of the robot (initialized to 0, and incremented just before `turn()`).
    *
+   * In JS, this is an instance variable named 'turn'.
+   *
    * Always available.
    */
-  int turn() const {
+  int turnCount() const {
     return jsRobot_["turn"].as<int>();
   }
 
@@ -202,17 +451,15 @@ class AbstractNativeRobot {
   /**
    * The global amount of fuel that the team possesses.
    */
-  int fuel() {
-    // TODO
-    return -1;
+  int fuel() const {
+    return jsAbstractRobot_["fuel"].as<int>();
   }
 
   /**
    * The global amount of karbonite that the team possesses.
    */
-  int karbonite() {
-    // TODO
-    return -1;
+  int karbonite() const {
+    return jsAbstractRobot_["karbonite"].as<int>();
   }
 
   /**
@@ -421,32 +668,80 @@ class AbstractNativeRobot {
 //  isRadioing(robot: Robot): boolean;
 
   /**
+   * Wrapper class for a 2d grid of numbers. This abstracts away the underlying implementation, which may change for
+   * efficiency.
+   * @tparam T The type of object stored.
+   */
+  template<typename T>
+  class Map {
+   private:
+    emscripten::val internal_value_;
+
+   public:
+    // TODO: several of these maps don't change over time, but are likely to have frequent reads. Cache them on the first
+    // turn to avoid stupid variable lookups. Profile to test the effect.
+    // Even for the getVisibleRobotMap() (which changes every turn), we only need to update the visible tiles (at most
+    // 357 for largest vision range), so it might be faster to store it locally.
+    explicit Map(emscripten::val value) : internal_value_(value) {}
+
+    /**
+     * Get the element store at a particular column. Note that the row corresponds to the y-coordinate, and the
+     * column corresponds to the x-coordinate.
+     *
+     * @param row the row
+     * @param col the col
+     * @return the value
+     */
+    T get(int row, int col) const {
+      return internal_value_[row][col].template as<T>();
+    }
+
+    /**
+     * Gets the number of rows (height) of the map
+     * @return number of rows
+     */
+    int rows() const {
+      return internal_value_["length"].template as<int>();
+    }
+    /**
+     * Gets the number of cols (width) of the map
+     * @return number of cols
+     */
+    int cols() const {
+      return internal_value_[0]["length"].template as<int>();
+    }
+  };
+  using MapBool = Map<bool>;
+  using MapChar = Map<char>;
+  using MapInt = Map<int>;
+
+  /**
    * Returns {@link GameState.shadow}.
    */
-//
-//  getVisibleRobotMap() : number
-//  [][];
+  MapInt getVisibleRobotMap() {
+    return MapInt(jsAbstractRobot_.call<emscripten::val>("getVisibleRobotMap"));
+  }
 
   /**
    * Returns {@link map}.
    */
-//
-//  getPassableMap() : boolean
-//  [][];
+  MapBool getPassableMap() {
+    return MapBool(jsAbstractRobot_.call<emscripten::val>("getPassableMap"));
+  }
 
   /**
    * Returns {@link karbonite_map}.
    */
-//
-//  getKarboniteMap() : boolean
-//  [][];
+  MapBool getKarboniteMap() {
+    return MapBool(jsAbstractRobot_.call<emscripten::val>("getKarboniteMap"));
+  }
 
   /**
    * Returns {@link fuel_map}.
    */
-//
-//  getFuelMap() : boolean
-//  [][];
+  MapBool getFuelMap() {
+    return MapBool(jsAbstractRobot_.call<emscripten::val>("getFuelMap"));
+  }
 
   /**
    * Returns {@link GameState.visible}.
