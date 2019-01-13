@@ -31,6 +31,7 @@ set(EMSCRIPTEN_SETTINGS
         "-s BINARYEN_ASYNC_COMPILATION=0" # disable async module loading, since BC19 is synchronous
         "-s TOTAL_MEMORY=${MEMORY_LIMIT}"
         # disable as much as possible
+        "-s FILESYSTEM=0"
         "-s NO_EXIT_RUNTIME=1"
         "-s EXPORTED_FUNCTIONS='[]'"
         "-s EXTRA_EXPORTED_RUNTIME_METHODS='[]'"
