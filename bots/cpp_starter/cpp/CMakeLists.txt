@@ -29,6 +29,7 @@ set(EMSCRIPTEN_SETTINGS
         "-s EXPORT_ES6" # ES6-style imports
         "-s MODULARIZE" # required for EXPORT_ES6
         "-s BINARYEN_ASYNC_COMPILATION=0" # disable async module loading, since BC19 is synchronous
+        # consider "-s ALLOW_MEMORY_GROWTH=1" if you're getting OOM, and not sure how much to allocate
         "-s TOTAL_MEMORY=${MEMORY_LIMIT}"
         # disable as much as possible
         "-s FILESYSTEM=0"
