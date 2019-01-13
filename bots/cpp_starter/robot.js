@@ -12,7 +12,7 @@ let nativeRobot = null;
 class MyRobot extends BCAbstractRobot {
     turn() {
         if (!nativeRobot) {
-            nativeRobot = new bindings.NativeRobot(this);
+            nativeRobot = bindings.AbstractNativeRobot.createNativeRobotImpl(this);
         }
         return nativeRobot.turn();
     }

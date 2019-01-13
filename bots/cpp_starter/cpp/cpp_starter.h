@@ -7,6 +7,7 @@
 
 // TODO: how fast is the js-native boundary layer? is it faster to copy values?
 
+namespace bc19 {
 namespace specs {
 enum class Unit : int {
   CASTLE = 0,
@@ -148,15 +149,39 @@ class Robot {
 //  time: number;
 };
 
-class NativeRobot {
+class AbstractNativeRobot {
  private:
   // TODO: I think this is reference counted. Does it ever get deallocated?
   emscripten::val jsAbstractRobot_;
 
- public:
-  explicit NativeRobot(emscripten::val jsAbstractRobot) : jsAbstractRobot_(jsAbstractRobot) {}
+ protected:
+  explicit AbstractNativeRobot(emscripten::val jsAbstractRobot) : jsAbstractRobot_(jsAbstractRobot) {}
 
-  emscripten::val turn();
+ public:
+  AbstractNativeRobot(const AbstractNativeRobot &) = delete;
+  AbstractNativeRobot(AbstractNativeRobot &&) = delete;
+  AbstractNativeRobot &operator=(const AbstractNativeRobot &) = delete;
+  AbstractNativeRobot &operator=(AbstractNativeRobot &&) = delete;
+  virtual ~AbstractNativeRobot() = default;
+
+  /**
+   * Competitors must subclass AbstractNativeRobot, and they must implement this function to provide a concrete
+   * implementation of the class. The parameter `jsAbstractRobot` is meant to be passed to the AbstractNativeRobot
+   * constructor. The parameter points to the javascript instance of BCAbstractRobot, and so players may use
+   * this to reason about the game state during the robot's first turn. For example, they might check what kind of
+   * unit is currently being controlled, and provide different concrete subclasses based on the type.
+   *
+   * @param jsAbstractRobot the JS BCAbstractRobot instance
+   * @return An instance of a subclass of AbstractNativeRobot, containing the team's code
+   */
+  static std::unique_ptr<AbstractNativeRobot> createNativeRobotImpl(emscripten::val jsAbstractRobot);
+
+  /**
+   * This is called once every turn.
+   *
+   * @return A valid javascript action object.
+   */
+  virtual emscripten::val turn() = 0;
 
   /**
    * The robot object of the playing robot.
@@ -431,4 +456,5 @@ class NativeRobot {
 //  [];
 
 };
+}
 #endif //CPP_STARTER_CPP_STARTER_H

@@ -2,25 +2,42 @@
 #include "fast_rand.h"
 
 using std::to_string;
+using std::unique_ptr;
+using std::make_unique;
 
-emscripten::val NativeRobot::turn() {
-  log("hello world!");
-  auto unit = me().unit();
-  if (unit == specs::Unit::CRUSADER) {
-    log("Crusader health: " + std::to_string(me().health()));
-    static const std::array<std::pair<int, int>, 8> choices =
-        {{{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}}};
-    const auto &choice = choices[fast_rand::small_uniform_int_rand(choices.size())];
-    return move(choice.first, choice.second);
-  } else if (unit == specs::Unit::CASTLE) {
-    log("Castle health: " + std::to_string(me().health()));
-    if (me().turn() % 10 == 0) {
-      log("Building a crusader at " + to_string(me().x() + 1) + ", " + to_string(me().y() + 1));
-      return buildUnit(specs::Unit::CRUSADER, 1, 1);
-    } else {
-      return nullAction();
-    }
+namespace bc19 {
+
+class NoOpRobot : public AbstractNativeRobot {
+ public:
+  explicit NoOpRobot(const emscripten::val &jsAbstractRobot) : AbstractNativeRobot(jsAbstractRobot) {}
+
+  emscripten::val turn() override {
+    return nullAction();
   }
+};
 
-  return nullAction();
+class CastleRobot : public AbstractNativeRobot {
+ public:
+  explicit CastleRobot(const emscripten::val &jsAbstractRobot) : AbstractNativeRobot(jsAbstractRobot) {}
+
+  emscripten::val turn() override {
+    return nullAction();
+  }
+};
+
+unique_ptr<AbstractNativeRobot> AbstractNativeRobot::createNativeRobotImpl(emscripten::val jsAbstractRobot) {
+  // Can't use convenience me() method here, because the wrapper class has not been initialized
+  Robot me = Robot::fromSelfRobot(jsAbstractRobot);
+  switch (me.unit()) {
+    case specs::Unit::CASTLE:return make_unique<CastleRobot>(jsAbstractRobot);
+    case specs::Unit::CHURCH:return make_unique<NoOpRobot>(jsAbstractRobot);
+    case specs::Unit::PILGRIM:return make_unique<NoOpRobot>(jsAbstractRobot);
+    case specs::Unit::CRUSADER: return make_unique<NoOpRobot>(jsAbstractRobot);
+    case specs::Unit::PROPHET:return make_unique<NoOpRobot>(jsAbstractRobot);
+    case specs::Unit::PREACHER:return make_unique<NoOpRobot>(jsAbstractRobot);
+    case specs::Unit::UNDEFINED:break;
+  }
+  return make_unique<NoOpRobot>(jsAbstractRobot);
+}
+
 }
