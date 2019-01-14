@@ -101,13 +101,7 @@ constexpr int chess_extra = 20;
 constexpr int max_memory = 50000000;
 
 enum class Unit : int {
-  CASTLE = 0,
-  CHURCH,
-  PILGRIM,
-  CRUSADER,
-  PROPHET,
-  PREACHER,
-  UNDEFINED
+  CASTLE = 0, CHURCH, PILGRIM, CRUSADER, PROPHET, PREACHER, UNDEFINED
 };
 
 struct UnitSpecs {
@@ -178,93 +172,85 @@ struct UnitSpecs {
  *
  * The index is the id of the unit as specified in the {@link SPECS}, like {@link PILGRIM} and {@link CRUSADER}.
  */
-constexpr std::array<UnitSpecs, 6> units =
-    {{
-         {
-             /*CONSTRUCTION_KARBONITE*/ -1,
-             /*CONSTRUCTION_FUEL*/ -1,
-             /*KARBONITE_CAPACITY*/ -1,
-             /*FUEL_CAPACITY*/ -1,
-             /*SPEED*/ 0,
-             /*FUEL_PER_MOVE*/ -1,
-             /*STARTING_HP*/ 100,
-             /*VISION_RADIUS*/ 100,
-             /*ATTACK_DAMAGE*/ -1,
-             /*ATTACK_RADIUS*/ {{-1, -1}},
-             /*ATTACK_FUEL_COST*/ -1,
-             /*DAMAGE_SPREAD*/ -1
-         },
-         {
-             /*CONSTRUCTION_KARBONITE*/ 50,
-             /*CONSTRUCTION_FUEL*/ 200,
-             /*KARBONITE_CAPACITY*/ -1,
-             /*FUEL_CAPACITY*/ -1,
-             /*SPEED*/ 0,
-             /*FUEL_PER_MOVE*/ -1,
-             /*STARTING_HP*/ 50,
-             /*VISION_RADIUS*/ 100,
-             /*ATTACK_DAMAGE*/ -1,
-             /*ATTACK_RADIUS*/ {{-1, -1}},
-             /*ATTACK_FUEL_COST*/ -1,
-             /*DAMAGE_SPREAD*/ -1
-         },
-         {
-             /*CONSTRUCTION_KARBONITE*/ 10,
-             /*CONSTRUCTION_FUEL*/ 50,
-             /*KARBONITE_CAPACITY*/ 20,
-             /*FUEL_CAPACITY*/ 100,
-             /*SPEED*/ 4,
-             /*FUEL_PER_MOVE*/ 1,
-             /*STARTING_HP*/ 10,
-             /*VISION_RADIUS*/ 100,
-             /*ATTACK_DAMAGE*/ -1,
-             /*ATTACK_RADIUS*/ {{-1, -1}},
-             /*ATTACK_FUEL_COST*/ -1,
-             /*DAMAGE_SPREAD*/ -1
-         },
-         {
-             /*CONSTRUCTION_KARBONITE*/ 20,
-             /*CONSTRUCTION_FUEL*/ 50,
-             /*KARBONITE_CAPACITY*/ 20,
-             /*FUEL_CAPACITY*/ 100,
-             /*SPEED*/ 9,
-             /*FUEL_PER_MOVE*/ 1,
-             /*STARTING_HP*/ 40,
-             /*VISION_RADIUS*/ 36,
-             /*ATTACK_DAMAGE*/ 10,
-             /*ATTACK_RADIUS*/ {{1, 16}},
-             /*ATTACK_FUEL_COST*/ 10,
-             /*DAMAGE_SPREAD*/ 0
-         },
-         {
-             /*CONSTRUCTION_KARBONITE*/ 25,
-             /*CONSTRUCTION_FUEL*/ 50,
-             /*KARBONITE_CAPACITY*/ 20,
-             /*FUEL_CAPACITY*/ 100,
-             /*SPEED*/ 4,
-             /*FUEL_PER_MOVE*/ 2,
-             /*STARTING_HP*/ 20,
-             /*VISION_RADIUS*/ 64,
-             /*ATTACK_DAMAGE*/ 10,
-             /*ATTACK_RADIUS*/ {{16, 64}},
-             /*ATTACK_FUEL_COST*/ 25,
-             /*DAMAGE_SPREAD*/ 0
-         },
-         {
-             /*CONSTRUCTION_KARBONITE*/ 30,
-             /*CONSTRUCTION_FUEL*/ 50,
-             /*KARBONITE_CAPACITY*/ 20,
-             /*FUEL_CAPACITY*/ 100,
-             /*SPEED*/ 4,
-             /*FUEL_PER_MOVE*/ 3,
-             /*STARTING_HP*/ 60,
-             /*VISION_RADIUS*/ 16,
-             /*ATTACK_DAMAGE*/ 20,
-             /*ATTACK_RADIUS*/ {{1, 16}},
-             /*ATTACK_FUEL_COST*/ 15,
-             /*DAMAGE_SPREAD*/ 3
-         }
-     }};
+constexpr std::array<UnitSpecs, 6> units = {{{
+    /*CONSTRUCTION_KARBONITE*/ -1,
+    /*CONSTRUCTION_FUEL*/ -1,
+    /*KARBONITE_CAPACITY*/ -1,
+    /*FUEL_CAPACITY*/ -1,
+    /*SPEED*/ 0,
+    /*FUEL_PER_MOVE*/ -1,
+    /*STARTING_HP*/ 100,
+    /*VISION_RADIUS*/ 100,
+    /*ATTACK_DAMAGE*/ -1,
+    /*ATTACK_RADIUS*/ {{-1, -1}},
+    /*ATTACK_FUEL_COST*/ -1,
+    /*DAMAGE_SPREAD*/ -1
+}, {
+    /*CONSTRUCTION_KARBONITE*/ 50,
+    /*CONSTRUCTION_FUEL*/ 200,
+    /*KARBONITE_CAPACITY*/ -1,
+    /*FUEL_CAPACITY*/ -1,
+    /*SPEED*/ 0,
+    /*FUEL_PER_MOVE*/ -1,
+    /*STARTING_HP*/ 50,
+    /*VISION_RADIUS*/ 100,
+    /*ATTACK_DAMAGE*/ -1,
+    /*ATTACK_RADIUS*/ {{-1, -1}},
+    /*ATTACK_FUEL_COST*/ -1,
+    /*DAMAGE_SPREAD*/ -1
+}, {
+    /*CONSTRUCTION_KARBONITE*/ 10,
+    /*CONSTRUCTION_FUEL*/ 50,
+    /*KARBONITE_CAPACITY*/ 20,
+    /*FUEL_CAPACITY*/ 100,
+    /*SPEED*/ 4,
+    /*FUEL_PER_MOVE*/ 1,
+    /*STARTING_HP*/ 10,
+    /*VISION_RADIUS*/ 100,
+    /*ATTACK_DAMAGE*/ -1,
+    /*ATTACK_RADIUS*/ {{-1, -1}},
+    /*ATTACK_FUEL_COST*/ -1,
+    /*DAMAGE_SPREAD*/ -1
+}, {
+    /*CONSTRUCTION_KARBONITE*/ 20,
+    /*CONSTRUCTION_FUEL*/ 50,
+    /*KARBONITE_CAPACITY*/ 20,
+    /*FUEL_CAPACITY*/ 100,
+    /*SPEED*/ 9,
+    /*FUEL_PER_MOVE*/ 1,
+    /*STARTING_HP*/ 40,
+    /*VISION_RADIUS*/ 36,
+    /*ATTACK_DAMAGE*/ 10,
+    /*ATTACK_RADIUS*/ {{1, 16}},
+    /*ATTACK_FUEL_COST*/ 10,
+    /*DAMAGE_SPREAD*/ 0
+}, {
+    /*CONSTRUCTION_KARBONITE*/ 25,
+    /*CONSTRUCTION_FUEL*/ 50,
+    /*KARBONITE_CAPACITY*/ 20,
+    /*FUEL_CAPACITY*/ 100,
+    /*SPEED*/ 4,
+    /*FUEL_PER_MOVE*/ 2,
+    /*STARTING_HP*/ 20,
+    /*VISION_RADIUS*/ 64,
+    /*ATTACK_DAMAGE*/ 10,
+    /*ATTACK_RADIUS*/ {{16, 64}},
+    /*ATTACK_FUEL_COST*/ 25,
+    /*DAMAGE_SPREAD*/ 0
+}, {
+    /*CONSTRUCTION_KARBONITE*/ 30,
+    /*CONSTRUCTION_FUEL*/ 50,
+    /*KARBONITE_CAPACITY*/ 20,
+    /*FUEL_CAPACITY*/ 100,
+    /*SPEED*/ 4,
+    /*FUEL_PER_MOVE*/ 3,
+    /*STARTING_HP*/ 60,
+    /*VISION_RADIUS*/ 16,
+    /*ATTACK_DAMAGE*/ 20,
+    /*ATTACK_RADIUS*/ {{1, 16}},
+    /*ATTACK_FUEL_COST*/ 15,
+    /*DAMAGE_SPREAD*/ 3
+}}};
 }
 
 class Robot {
@@ -272,11 +258,11 @@ class Robot {
   // TODO: can this be a reference?
   emscripten::val jsRobot_;
 
+ public:
   // TODO: make various factory methods for this
   Robot(emscripten::val jsRobot) : jsRobot_(jsRobot) {
   }
 
- public:
   static Robot fromSelfRobot(const emscripten::val &jsAbstractRobot) {
     return Robot(jsAbstractRobot["me"]);
   }
@@ -310,7 +296,7 @@ class Robot {
    * Only available for `r = this.me`.
    */
   int health() const {
-    // TODO assert r = this.me
+    // TODO: assert r = this.me
     return jsRobot_["health"].as<int>();
   }
 
@@ -319,8 +305,9 @@ class Robot {
    *
    * Available if visible.
    */
-//  team?:
-//  number;
+  int team() const {
+    return jsRobot_["team"].as<int>();
+  }
 
   /**
    * The x position of the robot.
@@ -330,6 +317,7 @@ class Robot {
   int x() const {
     return jsRobot_["x"].as<int>();
   }
+
   /**
    * The y position of the robot.
    *
@@ -345,8 +333,8 @@ class Robot {
    * Only available if {@link BCAbstractRobot.me} equals this robot.
    */
   int fuel() {
-    // TODO
-    return -1;
+    // TODO: assert r = this.me
+    return jsRobot_["fuel"].as<int>();
   }
 
   /**
@@ -355,8 +343,8 @@ class Robot {
    * Only available if {@link BCAbstractRobot.me} equals this robot.
    */
   int karbonite() {
-    // TODO
-    return -1;
+    // TODO: assert r = this.me
+    return jsRobot_["karbonite"].as<int>();
   }
 
   /**
@@ -375,27 +363,35 @@ class Robot {
    *
    * -1 if not radioable.
    */
-//  signal: number;
+  int signal() const {
+    return jsRobot_["signal"].as<int>();
+  }
 
   /**
    * The signal radius of the robot.
    *
    * -1 if not radioable.
    */
-//  signal_radius: number;
+  int signal_radius() const {
+    return jsRobot_["signal_radius"].as<int>();
+  }
 
   /**
    * The castle talk message sent by the robot.
    *
    * Available if {@link BCAbstractRobot.me} is a Castle.
    */
-//  castle_talk?:
-//  number;
+  uint8_t castle_talk() const {
+    // TODO: assert me.unit == CASTLE
+    return jsRobot_["castle_talk"].as<uint8_t>();
+  }
 
   /**
    * The amount of milliseconds this robot has left in it's chess clock.
    */
-//  time: number;
+  int time() const {
+    return jsRobot_["time"].as<int>();
+  }
 };
 
 class AbstractNativeRobot {
@@ -404,7 +400,8 @@ class AbstractNativeRobot {
   emscripten::val jsAbstractRobot_;
 
  protected:
-  explicit AbstractNativeRobot(emscripten::val jsAbstractRobot) : jsAbstractRobot_(jsAbstractRobot) {}
+  explicit AbstractNativeRobot(emscripten::val jsAbstractRobot) : jsAbstractRobot_(jsAbstractRobot) {
+  }
 
  public:
   AbstractNativeRobot(const AbstractNativeRobot &) = delete;
@@ -473,27 +470,27 @@ class AbstractNativeRobot {
    *
    * Available for castles (always `null` for other units).
    */
-//  last_offer: number
-//  [][] |
-//  null;
+  //  last_offer: number
+  //  [][] |
+  //  null;
 
   /**
    * The full map represented as a boolean grid where `true` indicates passable and `false` indicates impassable.
    */
-//  map: boolean
-//  [][];
+  //  map: boolean
+  //  [][];
 
   /**
    * The karbonite map represented as a boolean grid where `true` indicates that karbonite is present and `false` indicates that it is not.
    */
-//  karbonite_map: boolean
-//  [][];
+  //  karbonite_map: boolean
+  //  [][];
 
   /**
    * The fuel map represented as a boolean grid where `true` indicates that fuel is present and `false` indicates that it is not.
    */
-//  fuel_map: boolean
-//  [][];
+  //  fuel_map: boolean
+  //  [][];
 
 
   /**
@@ -515,8 +512,8 @@ class AbstractNativeRobot {
    * @param value - The value to signal, which should be between 0 and 2^{@link Specs.COMMUNICATION_BITS}-1 (inclusive)
    * @param radius - The radius to signal in
    */
-//  signal(value: number, radius: number
-//  ): void;
+  //  signal(value: number, radius: number
+  //  ): void;
 
   /**
    * Broadcast `value` to all castles of the same team. Does not use fuel.
@@ -524,7 +521,10 @@ class AbstractNativeRobot {
    *
    * @param value - The number to broadcast, which should be between 0 and 2^{@link Specs.CASTLE_TALK_BITS}-1 (inclusive)
    */
-//  castleTalk(value: number): void;
+  void castleTalk(const uint8_t value) {
+    // TODO: check preconditions, then assign to _bc_castle_talk directly
+    jsAbstractRobot_.call<void>("castleTalk", value);
+  }
 
   /**
    * Propose a trade with the other team. `karbonite` and `fuel` need to be integers.
@@ -605,13 +605,13 @@ class AbstractNativeRobot {
    * @param karbonite - The amount of karbonite to give to the receiving robot
    * @param fuel - The amount of fuel to give to the receiving robot
    */
-//  give(
-//      dx: number,
-//      dy: number,
-//      karbonite: number,
-//      fuel: number,
-//  ):
-//  GiveAction;
+  //  give(
+  //      dx: number,
+  //      dy: number,
+  //      karbonite: number,
+  //      fuel: number,
+  //  ):
+  //  GiveAction;
   emscripten::val give(const int dx, const int dy, const int karbonite, const int number) const {
     // TODO: reimplement the JS logic here, to avoid unnecessary debug checks
     return jsAbstractRobot_.call<emscripten::val>("give", dy, dy, karbonite, number);
@@ -646,26 +646,26 @@ class AbstractNativeRobot {
    *
    * @param id - The id of the robot to retrieve
    */
-//   Robot getRobot(int id) {
-//    // TODO
-//    return -1;
-//  }
+  //   Robot getRobot(int id) {
+  //    // TODO
+  //    return -1;
+  //  }
 
   /**
    * Returns `true` if the given robot object is visible.
    *
    * @param robot - The robot to check
    */
-//
-//  isVisible(robot: Robot): boolean;
+  //
+  //  isVisible(robot: Robot): boolean;
 
   /**
    * Returns `true` if the given robot object is currently sending radio (signal).
    *
    * @param robot - The robot to check
    */
-//
-//  isRadioing(robot: Robot): boolean;
+  //
+  //  isRadioing(robot: Robot): boolean;
 
   /**
    * Wrapper class for a 2d grid of numbers. This abstracts away the underlying implementation, which may change for
@@ -682,7 +682,8 @@ class AbstractNativeRobot {
     // turn to avoid stupid variable lookups. Profile to test the effect.
     // Even for the getVisibleRobotMap() (which changes every turn), we only need to update the visible tiles (at most
     // 357 for largest vision range), so it might be faster to store it locally.
-    explicit Map(emscripten::val value) : internal_value_(value) {}
+    explicit Map(emscripten::val value) : internal_value_(value) {
+    }
 
     /**
      * Get the element store at a particular column. Note that the row corresponds to the y-coordinate, and the
@@ -703,6 +704,7 @@ class AbstractNativeRobot {
     int rows() const {
       return internal_value_["length"].template as<int>();
     }
+
     /**
      * Gets the number of cols (width) of the map
      * @return number of cols
@@ -711,6 +713,7 @@ class AbstractNativeRobot {
       return internal_value_[0]["length"].template as<int>();
     }
   };
+
   using MapBool = Map<bool>;
   using MapChar = Map<char>;
   using MapInt = Map<int>;
@@ -746,9 +749,10 @@ class AbstractNativeRobot {
   /**
    * Returns {@link GameState.visible}.
    */
-//
-//  getVisibleRobots() : Robot
-//  [];
+  emscripten::val getVisibleRobots() {
+    // TODO: this may also be worth caching, or at least converting to typed instances
+    return jsAbstractRobot_["_bc_game_state"]["visible"];
+  }
 
 };
 }
