@@ -267,6 +267,10 @@ class Robot {
     return Robot(jsAbstractRobot["me"]);
   }
 
+  auto &jsRobot() {
+    return jsRobot_;
+  }
+
   /**
    * The id of the robot, which is an integer between 1 and {@link Specs.MAX_ID}.
    *
@@ -656,8 +660,10 @@ class AbstractNativeRobot {
    *
    * @param robot - The robot to check
    */
-  //
-  //  isVisible(robot: Robot): boolean;
+  bool isVisible(Robot &robot) {
+    // TODO: we can implement this locally if we make a separate boolean for visibility in the robot class
+    return jsAbstractRobot_.call<bool>("isVisible", robot.jsRobot());
+  }
 
   /**
    * Returns `true` if the given robot object is currently sending radio (signal).
