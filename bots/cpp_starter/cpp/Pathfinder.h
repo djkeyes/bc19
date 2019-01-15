@@ -6,6 +6,7 @@
 #include "cpp_starter.h"
 #include "Coordinate.h"
 #include "DeterministicResourceClusterer.h"
+#include "Grid.h"
 
 namespace bc19 {
 class Pathfinder {
@@ -14,31 +15,8 @@ class Pathfinder {
   AbstractNativeRobot *const self_;
 
   // FIXME until the starter API map is updated, keep a copy of the passable map
-  template<typename T>
-  struct Grid {
-    Grid(int cols, int rows)
-        : cols_(cols), rows_(rows), data(static_cast<typename std::vector<T>::size_type>(cols * rows)) {
-    }
-
-    void set(int row, int col, T val) {
-      data[row * cols_ + col] = val;
-    }
-
-    const T &get(int row, int col) const {
-      return data[row * cols_ + col];
-    }
-
-    const T &get(const Coordinate &coord) const {
-      return get(coord.row_, coord.col_);
-    }
-
-    int cols_;
-    int rows_;
-    std::vector<T> data;
-  };
-
-  static Grid<uint8_t> copyPassableMap(const AbstractNativeRobot::MapBool &map) {
-    Grid<uint8_t> result(map.rows(), map.cols());
+  static GridChar copyPassableMap(const AbstractNativeRobot::MapBool &map) {
+    GridChar result(map.rows(), map.cols());
     for (int row = 0; row < result.rows_; ++row) {
       for (int cols = 0; cols < result.cols_; ++cols) {
         result.set(row, cols, static_cast<uint8_t>(map.get(row, cols)));
@@ -49,7 +27,7 @@ class Pathfinder {
 
   // TODO: there's significant doubt in the world about whether vector<bool> is faster than vector<char>. We should
   // profile this.
-  Grid<uint8_t> passable_map_;
+  GridChar passable_map_;
 
   // Only does a single step of best-first-search. Avoid using this if feasible.
   emscripten::val singlePassPathFinding(const Coordinate &from,

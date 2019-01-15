@@ -30,7 +30,8 @@ set(SRC_FILES
         DeterministicResourceClusterer.h
         Coordinate.h
         Pathfinder.cpp
-        Pathfinder.h)
+        Pathfinder.h
+        Grid.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})
