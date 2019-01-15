@@ -206,8 +206,8 @@ Coordinate PilgrimRobot::chooseDepot() const {
   // start position already pretty close? just chose anywhere outside of our vision range
   for (const auto dir :
       directions::horiz_adjacent) {
-    Coordinate offset = my_loc + Coordinate(static_cast<Coordinate::DimType>(dir.first * 11),
-                                            static_cast<Coordinate::DimType>(dir.second * 11));
+    Coordinate offset = my_loc
+        + Coordinate(static_cast<Coordinate::DimType>(dir.row_ * 11), static_cast<Coordinate::DimType>(dir.col_ * 11));
     if (offset.row_ >= 0 && offset.col_ >= 0 && offset.row_ < rows && offset.col_ < cols) {
       return offset;
     }

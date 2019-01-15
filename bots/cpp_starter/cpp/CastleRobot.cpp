@@ -83,8 +83,8 @@ emscripten::val CastleRobot::tryBuilding(const Unit &unit_type) {
   const int curx = this->me().x();
   const int cury = this->me().y();
   for (const auto &dir : directions::adjacent_spiral) {
-    const auto &dx = dir.first;
-    const auto &dy = dir.second;
+    const auto &dx = dir.col_;
+    const auto &dy = dir.row_;
     const auto targetx = curx + dx;
     const auto targety = cury + dy;
     if (!(targetx >= 0 && targety >= 0 && targetx < cols && targety < rows)) {

@@ -15,8 +15,8 @@ namespace bc19 {
 namespace directions {
 // TODO: make some constexpr functions that can compute lists of tile displacements at compiletime
 
-constexpr std::array<std::pair<int, int>, 4> horiz_adjacent = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}};
-constexpr std::array<std::pair<int, int>, 8>
+constexpr std::array<Coordinate, 4> horiz_adjacent = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}};
+constexpr std::array<Coordinate, 8>
     adjacent_spiral = {{{-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}}};
 }
 
