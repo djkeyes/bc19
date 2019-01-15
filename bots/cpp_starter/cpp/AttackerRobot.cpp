@@ -16,7 +16,7 @@ emscripten::val AttackerRobot::onTurn() {
 
   static const Coordinate
       start_tile = Coordinate(static_cast<Coordinate::DimType>(me().y()), static_cast<Coordinate::DimType>(me().x()));
-  if (me().turnCount() < 150) {
+  if (me().turnCount() < 100) {
     const auto dest = symmetry_.flipCoord(start_tile);
     if (me().unit() == specs::Unit::PREACHER) {
       // gotta go fast
@@ -24,13 +24,12 @@ emscripten::val AttackerRobot::onTurn() {
     } else {
       return pathfinder_.pathTowardCheaply(dest);
     }
-
   }
 
   const auto tile = pathfinder_.getNearbyPassableTile(clusterer_.clusters()[cluster_index_].centroid());
   ++turns_pathing_;
-  if ((turns_pathing_ % 20 == 0) || (Coordinate(static_cast<Coordinate::DimType>(me().y()),
-                                                static_cast<Coordinate::DimType>(me().x())).distSq(tile) < 16)) {
+  if ((turns_pathing_ % 50 == 0) || (Coordinate(static_cast<Coordinate::DimType>(me().y()),
+                                                static_cast<Coordinate::DimType>(me().x())).distSq(tile) < 25)) {
     ++cluster_index_;
     turns_pathing_ = 0;
     cluster_index_ %= clusterer_.clusters().size();
