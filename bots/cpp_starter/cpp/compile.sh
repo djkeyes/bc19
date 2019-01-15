@@ -25,3 +25,5 @@ make -j4 VERBOSE=1
 popd > /dev/null # build
 
 cp ${build_dir}/wasm_lib_GENERATED.js ${current_dir}/../
+# Encode the .wasm file ourself, because Emscripten's version is slow & can't be eagerly pre-loaded.
+node ${current_dir}/wasm2js.js ${build_dir}/wasm_lib_GENERATED.wasm ${current_dir}/../wasm_loader_GENERATED.js

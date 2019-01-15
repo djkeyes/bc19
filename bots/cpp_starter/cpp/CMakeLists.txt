@@ -28,7 +28,6 @@ add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})
 set(EMSCRIPTEN_SETTINGS
         "-s WASM"
         "--bind" # for embind
-        "-s SINGLE_FILE" # encodes wasm file as embedded hex string
         "-s EXPORT_ES6" # ES6-style imports
         "-s MODULARIZE" # required for EXPORT_ES6
         "-s BINARYEN_ASYNC_COMPILATION=0" # disable async module loading, since BC19 is synchronous
@@ -39,12 +38,8 @@ set(EMSCRIPTEN_SETTINGS
         "-s NO_EXIT_RUNTIME=1"
         "-s EXPORTED_FUNCTIONS='[]'"
         "-s EXTRA_EXPORTED_RUNTIME_METHODS='[]'"
-        # TODO: are these actually applied?
-        "-s ENVIRONMENT_MAY_BE_WEB=0"
-        "-s ENVIRONMENT_MAY_BE_WORKER=0"
-        "-s ENVIRONMENT_MAY_BE_NODE=0"
-        "-s ENVIRONMENT_MAY_BE_SHELL=0"
-        "-s ENVIRONMENT_MAY_BE_WEB_OR_WORKER=0")
+        "-s ENVIRONMENT=shell" # can't specify vanilla JS, but 'shell' generates the least boilerplate
+        )
 
 set(EMSCRIPTEN_SETTINGS_STRING "")
 foreach (SINGLE_SETTING ${EMSCRIPTEN_SETTINGS})
