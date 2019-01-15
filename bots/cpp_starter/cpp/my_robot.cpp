@@ -4,6 +4,7 @@
 #include "fast_rand.h"
 #include "UnitCounts.h"
 #include "CastleTalker.h"
+#include "CommonRobot.h"
 
 using std::to_string;
 using std::unique_ptr;
@@ -133,43 +134,6 @@ const std::vector<Unit>
     BuildOrder::PcPcPcPlPl_build_order = {Unit::PREACHER, Unit::PREACHER, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM};
 const std::vector<Unit>
     BuildOrder::PcPcPhPlPl_build_order = {Unit::PREACHER, Unit::PREACHER, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
-
-class CommonRobot : public AbstractNativeRobot {
- protected:
-  CastleTalker castle_talker_;
-
- public:
-  explicit CommonRobot(const emscripten::val &jsAbstractRobot)
-      : AbstractNativeRobot(jsAbstractRobot), castle_talker_(this) {
-  }
-
-  virtual void preTurn() {
-  };
-
-  virtual emscripten::val onTurn() = 0;
-
-  virtual void postTurn() {
-  };
-
-  emscripten::val turn() final {
-    commonPreTurn();
-    preTurn();
-    auto action = onTurn();
-    commonPostTurn();
-    postTurn();
-    return action;
-  }
-
- private:
-
-  void commonPreTurn() {
-  }
-
-  void commonPostTurn() {
-    castle_talker_.sendStagedMessage();
-  }
-
-};
 
 class NoOpRobot : public CommonRobot {
  public:
