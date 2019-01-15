@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "Pathfinder.h"
 #include "CommonRobot.h"
+#include "fast_rand.h"
 
 namespace bc19 {
 
@@ -207,6 +208,14 @@ Coordinate Pathfinder::getNearbyPassableTile(const Coordinate &coordinate) const
       }
     }
   }
+}
+
+emscripten::val Pathfinder::pathToRandomTile() {
+  int row = fast_rand::small_uniform_int_rand(static_cast<const uint32_t>(passable_map_.rows_));
+  int col = fast_rand::small_uniform_int_rand(static_cast<const uint32_t>(passable_map_.cols_));
+  Coordinate target =
+      getNearbyPassableTile(Coordinate(static_cast<Coordinate::DimType>(row), static_cast<Coordinate::DimType>(col)));
+  return pathTowardCheaply(target);
 }
 
 }

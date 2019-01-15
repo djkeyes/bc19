@@ -53,6 +53,7 @@ class Pathfinder {
   emscripten::val pathTowardQuickly(const Coordinate &coordinate);
 
   Coordinate getNearbyPassableTile(const Coordinate &coordinate) const;
+  emscripten::val pathToRandomTile();
 };
 
 }

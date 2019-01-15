@@ -7,6 +7,7 @@
 #include "CommonRobot.h"
 #include "CastleRobot.h"
 #include "PilgrimRobot.h"
+#include "AttackerRobot.h"
 
 using std::unique_ptr;
 using std::make_unique;
@@ -31,16 +32,6 @@ using specs::Unit;
 class NoOpRobot : public CommonRobot {
  public:
   explicit NoOpRobot(const emscripten::val &jsAbstractRobot) : CommonRobot(jsAbstractRobot) {
-  }
-
-  emscripten::val onTurn() override {
-    return nullAction();
-  }
-};
-
-class AttackerRobot : public CommonRobot {
- public:
-  explicit AttackerRobot(const emscripten::val &jsAbstractRobot) : CommonRobot(jsAbstractRobot) {
   }
 
   emscripten::val onTurn() override {
