@@ -52,7 +52,6 @@ const std::vector<specs::Unit>
 
 emscripten::val CastleRobot::onTurn() {
   castle_talker_.processCastleTalks(unit_counts_);
-  self_->log("time left at start of turn: " + to_string(self_->me().time()));
 
   // TODO(daniel): instead of creating actions, consider creating action generators, which are functors that
   // return an action. that way we can consider multiple actions, but only instantiate (and call JS bindings) for
