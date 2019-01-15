@@ -13,7 +13,13 @@ emscripten::val AttackerRobot::onTurn() {
     return drawValueMaps();
   }
 
-  // TODO: use map symmetry to determine where (at least one) castle must be
+  static const Coordinate
+      start_tile = Coordinate(static_cast<Coordinate::DimType>(me().y()), static_cast<Coordinate::DimType>(me().x()));
+  if (me().turnCount() < 150) {
+    return pathfinder_.pathTowardCheaply(symmetry_.flipCoord(start_tile));
+  }
+
+  // TODO: pathfind to clusters, to clear out hidden expos
   return pathfinder_.pathToRandomTile();
 }
 

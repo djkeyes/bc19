@@ -59,6 +59,10 @@ class Pathfinder {
     return passable_map_.get(coord);
   }
 
+  const GridChar &passableMap() const {
+    return passable_map_;
+  }
+
   bool onMap(const Coordinate coord) const {
     return coord.row_ >= 0 && coord.col_ >= 0 && coord.row_ < passable_map_.rows_ && coord.col_ < passable_map_.cols_;
   }

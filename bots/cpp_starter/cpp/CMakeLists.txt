@@ -31,7 +31,10 @@ set(SRC_FILES
         Coordinate.h
         Pathfinder.cpp
         Pathfinder.h
-        Grid.h AttackerRobot.cpp AttackerRobot.h)
+        Grid.h
+        AttackerRobot.cpp
+        AttackerRobot.h
+        MapSymmetry.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})

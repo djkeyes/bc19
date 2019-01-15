@@ -5,12 +5,14 @@
 
 #include "CommonRobot.h"
 #include "Pathfinder.h"
+#include "MapSymmetry.h"
 
 namespace bc19 {
 
 class AttackerRobot : public CommonRobot {
  private:
   Pathfinder pathfinder_;
+  MapSymmetry symmetry_;
 
   std::vector<Robot> nearby_enemies_;
   Grid<double> tile_values_;
@@ -23,7 +25,7 @@ class AttackerRobot : public CommonRobot {
 
  public:
   explicit AttackerRobot(const emscripten::val &jsAbstractRobot)
-      : CommonRobot(jsAbstractRobot), pathfinder_(this), version_(1) {
+      : CommonRobot(jsAbstractRobot), pathfinder_(this), symmetry_(pathfinder_), version_(1) {
     const auto &map = getPassableMap();
     tile_values_.resize(map.rows(), map.cols());
     tile_versions_.resize(map.rows(), map.cols());
