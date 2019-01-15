@@ -335,14 +335,16 @@ double AttackerRobot::computeBestValueNextAttack(const specs::Unit &my_type, con
   return 0.;
 }
 
-constexpr bool AttackerRobot::withinAttackRadius(const specs::Unit &unit, const Coordinate::DimSqType &sq) {
+bool AttackerRobot::withinAttackRadius(const specs::Unit &unit, const Coordinate::DimSqType &sq) {
   const auto &range = specs::units[static_cast<int>(unit)].attack_radius;
   switch (unit) {
   case specs::Unit::CRUSADER:
   case specs::Unit::PROPHET:
     return range[0] <= sq && sq <= range[1];
   case specs::Unit::PREACHER:
-    return range[0] <= sq && sq <= directions::preacher_effective_max_radius;
+    // extra cautious if we're a ranger and they're a preacher
+    return range[0] <= sq
+        && sq <= (me().unit() == specs::Unit::PROPHET ? 36 : directions::preacher_effective_max_radius);
   default:
     return false;
   }

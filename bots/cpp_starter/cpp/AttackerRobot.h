@@ -32,7 +32,7 @@ class AttackerRobot : public CommonRobot {
   }
 
   emscripten::val onTurn() override;
-  static constexpr bool withinAttackRadius(const specs::Unit &unit, const Coordinate::DimSqType &sq);
+  bool withinAttackRadius(const specs::Unit &unit, const Coordinate::DimSqType &sq);
   double computeBestValueAttack(const specs::Unit &my_type, Coordinate my_loc);
   double computeBestValueNextAttack(const specs::Unit &my_type, Coordinate tile);
 };
