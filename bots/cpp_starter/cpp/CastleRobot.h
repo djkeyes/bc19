@@ -61,11 +61,10 @@ class BuildOrder {
       }
     }
     // TODO: if the initial build is exhausted, switch to an adaptive strategy
-    ++count_;
-    count_ %= 3;
-    if (count_ == 0) {
+    int mod = unit_counts.movableUnitsBuilt();
+    if (mod == 0) {
       return specs::Unit::PREACHER;
-    } else if (count_ == 1) {
+    } else if (mod == 1) {
       return specs::Unit::PILGRIM;
     } else {
       return specs::Unit::PROPHET;
