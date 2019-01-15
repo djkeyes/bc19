@@ -23,16 +23,8 @@ class BuildOrder {
   static const std::vector<specs::Unit> PcPcPcPl_build_order;
   // all econ
   static const std::vector<specs::Unit> PlPlPlPlPlPlPlPlPlPl_build_order;
-  // 2 knight defence
-  static const std::vector<specs::Unit> CrCrPlPlPlPlPlPl_build_order;
-  // 3 knight defence
-  static const std::vector<specs::Unit> CrCrCrPlPlPlPl_build_order;
   // 4 knight defence
   static const std::vector<specs::Unit> CrCrCrCrPlPl_build_order;
-  // 4 knight defence, workers first
-  static const std::vector<specs::Unit> PlPlCrCrCrCr_build_order;
-  // 2 ranger defence?
-  static const std::vector<specs::Unit> PhPhPlPlPlPlPl_build_order;
   // 3 ranger defence?
   static const std::vector<specs::Unit> PhPhPhPlPl_build_order;
   // 2 ranger + mage defence?
@@ -50,7 +42,7 @@ class BuildOrder {
  public:
   explicit BuildOrder(AbstractNativeRobot *const this_robot)
       : self_(this_robot),
-      initial_build_order_(self_->me().team() == 0 ? &PcPcPcPl_build_order : &PhPhPhPlPl_build_order) {
+      initial_build_order_(self_->me().team() == 0 ? &PcPcPcPl_build_order : &CrCrCrCrPlPl_build_order) {
   }
 
   /**

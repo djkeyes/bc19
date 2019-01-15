@@ -27,18 +27,9 @@ const std::vector<specs::Unit>
     Unit::PILGRIM,
     Unit::PILGRIM
 };
-const std::vector<specs::Unit>BuildOrder::CrCrPlPlPlPlPlPl_build_order = {
-    Unit::CRUSADER,
-    Unit::CRUSADER,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM
+const std::vector<specs::Unit>BuildOrder::CrCrCrCrPlPl_build_order = {
+    Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::PILGRIM, Unit::PILGRIM
 };
-const std::vector<specs::Unit>BuildOrder::PhPhPlPlPlPlPl_build_order =
-    {Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM};
 const std::vector<specs::Unit>
     BuildOrder::PhPhPhPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
 const std::vector<specs::Unit>
