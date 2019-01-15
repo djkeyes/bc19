@@ -32,8 +32,6 @@ class BuildOrder {
   // 4 ranger defence, but pilgrim first
   static const std::vector<specs::Unit> PlPhPhPhPhPl_build_order;
 
-  mutable int count_ = 0;
-
   /**
    * The choice of the first few units is very important. If the round num is low enough, check nextToBuild instead
    * of building adaptively.
@@ -61,7 +59,7 @@ class BuildOrder {
       }
     }
     // TODO: if the initial build is exhausted, switch to an adaptive strategy
-    int mod = unit_counts.movableUnitsBuilt();
+    int mod = unit_counts.movableUnitsBuilt() % 3;
     if (mod == 0) {
       return specs::Unit::PREACHER;
     } else if (mod == 1) {
