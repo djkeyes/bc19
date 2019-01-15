@@ -217,7 +217,7 @@ emscripten::val Pathfinder::dijkstraPathfind(const Coordinate &from,
         }
       }
 
-//      self_->log("moving to " + std::to_string(to) + " from " + std::to_string(from));
+      //      self_->log("moving to " + std::to_string(to) + " from " + std::to_string(from));
       //      for (int row = 0; row < distances.rows_; ++row) {
       //        std::string foo = "";
       //        for (int col = 0; col < distances.cols_; ++col) {
@@ -304,11 +304,20 @@ Coordinate Pathfinder::getNearbyPassableTile(const Coordinate &coordinate) const
   }
 }
 
-emscripten::val Pathfinder::pathToRandomTile() {
+Coordinate Pathfinder::generateRandomTile() const {
   int row = fast_rand::small_uniform_int_rand(static_cast<const uint32_t>(passable_map_.rows_));
   int col = fast_rand::small_uniform_int_rand(static_cast<const uint32_t>(passable_map_.cols_));
-  Coordinate target =
-      getNearbyPassableTile(Coordinate(static_cast<Coordinate::DimType>(row), static_cast<Coordinate::DimType>(col)));
+  return getNearbyPassableTile(Coordinate(static_cast<Coordinate::DimType>(row),
+                                          static_cast<Coordinate::DimType>(col)));
+}
+
+emscripten::val Pathfinder::pathToRandomTile() {
+  static int turns_pathing = 0;
+  static Coordinate target;
+  if (turns_pathing % 30 == 0) {
+    target = generateRandomTile();
+  }
+  turns_pathing++;
   return pathTowardCheaply(target);
 }
 

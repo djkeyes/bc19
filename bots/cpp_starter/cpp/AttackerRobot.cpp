@@ -2,13 +2,14 @@
 
 #include "AttackerRobot.h"
 #include "cpp_starter.h"
+#include "fast_rand.h"
 
 namespace bc19 {
 
 emscripten::val AttackerRobot::onTurn() {
   // TODO: cache old enemy positions
   // TODO: signal enemy positions using longer vision units
-  nearby_enemies_ = getNearbyEnemies();
+  parseNearbyUnits();
   if (!nearby_enemies_.empty()) {
     return drawValueMaps();
   }
@@ -26,11 +27,22 @@ emscripten::val AttackerRobot::onTurn() {
 
   }
 
-  // TODO: pathfind to clusters, to clear out hidden expos
-  return pathfinder_.pathToRandomTile();
+  const auto tile = pathfinder_.getNearbyPassableTile(clusterer_.clusters()[cluster_index_].centroid());
+  ++turns_pathing_;
+  if ((turns_pathing_ % 20 == 0) || (Coordinate(static_cast<Coordinate::DimType>(me().y()),
+                                                static_cast<Coordinate::DimType>(me().x())).distSq(tile) < 16)) {
+    ++cluster_index_;
+    turns_pathing_ = 0;
+    cluster_index_ %= clusterer_.clusters().size();
+  }
+
+  return pathfinder_.pathTowardCheaply(tile);
 }
 
-std::vector<Robot> AttackerRobot::getNearbyEnemies() const {
+void AttackerRobot::parseNearbyUnits() {
+  nearby_castle_.reset();
+  is_castle_under_attack_ = false;
+
   std::vector<Robot> result;
   const auto &visible_robots = getVisibleRobots();
   const auto &length = visible_robots["length"].as<int>();
@@ -42,9 +54,22 @@ std::vector<Robot> AttackerRobot::getNearbyEnemies() const {
     }
     if (robot.team() != us) {
       result.emplace_back(robot);
+    } else {
+      if (robot.unit() == specs::Unit::CASTLE) {
+        nearby_castle_ =
+            Coordinate(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
+      }
     }
   }
-  return result;
+  nearby_enemies_ = result;
+  if (nearby_castle_) {
+    for (const auto &enemy : nearby_enemies_) {
+      if (nearby_castle_->distSq(Coordinate(static_cast<Coordinate::DimType>(enemy.y()),
+                                            static_cast<Coordinate::DimType>(enemy.x()))))
+        is_castle_under_attack_ = true;
+      break;
+    }
+  }
 }
 
 // TODO: refactor this
@@ -350,8 +375,11 @@ bool AttackerRobot::withinAttackRadius(const specs::Unit &unit, const Coordinate
     return range[0] <= sq && sq <= range[1];
   case specs::Unit::PREACHER:
     // extra cautious if we're a ranger and they're a preacher
-    return range[0] <= sq
-        && sq <= (me().unit() == specs::Unit::PROPHET ? 36 : directions::preacher_effective_max_radius);
+    if (me().unit() == specs::Unit::PROPHET && !is_castle_under_attack_) {
+      return range[0] <= sq && sq <= 36;
+    } else {
+      return range[0] <= sq && sq <= directions::preacher_effective_max_radius;
+    }
   default:
     return false;
   }

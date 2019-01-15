@@ -44,6 +44,8 @@ class Pathfinder {
                                    const Coordinate &to,
                                    Coordinate::DimSqType max_radius_sq) const;
 
+  Coordinate generateRandomTile() const;
+  
  public:
   explicit Pathfinder(AbstractNativeRobot *const self)
       : self_(self), passable_map_(copyPassableMap(self->getPassableMap())) {

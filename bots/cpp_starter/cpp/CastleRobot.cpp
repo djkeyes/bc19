@@ -34,6 +34,10 @@ const std::vector<specs::Unit>
     BuildOrder::PhPhPhPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
 const std::vector<specs::Unit>
     BuildOrder::PhPhPcPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM};
+const std::vector<specs::Unit>
+    BuildOrder::PlPhPhPhPhPl_build_order = {
+    Unit::PILGRIM, Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM
+};
 
 emscripten::val CastleRobot::onTurn() {
   castle_talker_.processCastleTalks(unit_counts_);
