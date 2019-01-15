@@ -100,6 +100,7 @@ emscripten::val Pathfinder::bfsPathfind(const Coordinate &from,
   // if we're doing more than 1 search, it would make more sense to start at the origin, then back trace the path
   queue.push(to);
   distances.set(to, 0);
+  static const int radius_sq_to_ignore_occupied = 5 * 5;
   while (!queue.empty()) {
     const auto cur = queue.pop();
 
@@ -139,8 +140,10 @@ emscripten::val Pathfinder::bfsPathfind(const Coordinate &from,
       if (next.row_ >= 0 && next.col_ >= 0 && next.row_ < passable_map_.rows_ && next.col_ < passable_map_.cols_
           && passable_map_.get(next)) {
         if (distances.get(next) == std::numeric_limits<uint16_t>::max()) {
-          // TODO: untill we improve the JS api, it's probably fastest to call this last
-          if (occupied_map.get(next.row_, next.col_) == 0) {
+          // TODO: until we improve the JS api, it's probably fastest to call this last
+          // TODO: we should probably check and remember where buildings are
+          if (from.distSq(next) >= radius_sq_to_ignore_occupied || occupied_map.get(next.row_, next.col_) == 0
+              || from == next) {
             distances.set(next, next_dist);
             queue.push(next);
           }
