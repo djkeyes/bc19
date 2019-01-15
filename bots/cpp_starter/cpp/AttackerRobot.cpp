@@ -16,7 +16,14 @@ emscripten::val AttackerRobot::onTurn() {
   static const Coordinate
       start_tile = Coordinate(static_cast<Coordinate::DimType>(me().y()), static_cast<Coordinate::DimType>(me().x()));
   if (me().turnCount() < 150) {
-    return pathfinder_.pathTowardCheaply(symmetry_.flipCoord(start_tile));
+    const auto dest = symmetry_.flipCoord(start_tile);
+    if (me().unit() == specs::Unit::PREACHER) {
+      // gotta go fast
+      return pathfinder_.pathTowardQuickly(dest);
+    } else {
+      return pathfinder_.pathTowardCheaply(dest);
+    }
+
   }
 
   // TODO: pathfind to clusters, to clear out hidden expos

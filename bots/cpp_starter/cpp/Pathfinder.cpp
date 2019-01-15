@@ -168,8 +168,97 @@ emscripten::val Pathfinder::dijkstraPathfind(const Coordinate &from,
   if (max_radius_sq <= 2) {
     return bfsPathfind(from, to, max_radius_sq == 2);
   }
-  // TODO: actually implement this
-  return bfsPathfind(from, to, true);
+
+  // this naming is bad. This isn't dijkstra's, but the issue is that we have to different cost functions (time vs
+  // fuel).
+  // TODO: clean up
+
+  static Grid<uint16_t> distances(passable_map_.rows_, passable_map_.cols_);
+  for (unsigned short &iter : distances.data) {
+    iter = std::numeric_limits<uint16_t>::max();
+  }
+
+  const auto &occupied_map = self_->getVisibleRobotMap();
+
+  CircularQueue<Coordinate> queue(2 * max_radius_sq * (passable_map_.rows_ + passable_map_.cols_ + 2));
+  // search backwards from the destination
+  // if we're doing more than 1 search, it would make more sense to start at the origin, then back trace the path
+  queue.push(to);
+  distances.set(to, 0);
+  static const int visibility_radius = specs::units[static_cast<int>(self_->me().unit())].vision_radius;
+  while (!queue.empty()) {
+    const auto cur = queue.pop();
+
+    if (cur == from) {
+      // find which direction came here
+      Coordinate cheapest_dir(1, 0);
+      auto cheapest_cost = std::numeric_limits<uint16_t>::max();
+
+      for (Coordinate::DimSqType row = 0; row * row <= max_radius_sq; ++row) {
+        for (Coordinate::DimSqType col = 0; col * col + row * row <= max_radius_sq; ++col) {
+          if (row == 0 && col == 0) {
+            continue;
+          }
+          for (Coordinate::DimType rsign = -1; rsign <= 1; rsign += 2) {
+            for (Coordinate::DimType csign = -1; csign <= 1; csign += 2) {
+              Coordinate delta = Coordinate(static_cast<Coordinate::DimType>(row) * rsign,
+                                            static_cast<Coordinate::DimType>(col) * csign);
+              const Coordinate prev = cur + delta;
+              if (prev.row_ >= 0 && prev.col_ >= 0 && prev.row_ < passable_map_.rows_
+                  && prev.col_ < passable_map_.cols_) {
+                const auto dist = distances.get(prev);
+                if (dist < cheapest_cost) {
+                  cheapest_cost = dist;
+                  cheapest_dir = delta;
+                }
+              }
+            }
+          }
+        }
+      }
+
+//      self_->log("moving to " + std::to_string(to) + " from " + std::to_string(from));
+      //      for (int row = 0; row < distances.rows_; ++row) {
+      //        std::string foo = "";
+      //        for (int col = 0; col < distances.cols_; ++col) {
+      //          foo += "[" + std::to_string(distances.get(row, col)) + "]";
+      //        }
+      //        self_->log(foo);
+      //      }
+      //
+      //      self_->log("cheapest dir: " + std::to_string(cheapest_dir) + ", cost: " + std::to_string(cheapest_cost));
+      return self_->move(cheapest_dir.col_, cheapest_dir.row_);
+    }
+
+    const uint16_t next_dist = distances.get(cur) + static_cast<const uint16_t>(1);
+    for (Coordinate::DimSqType row = 0; row * row <= max_radius_sq; ++row) {
+      for (Coordinate::DimSqType col = 0; col * col + row * row <= max_radius_sq; ++col) {
+        for (Coordinate::DimType rsign = -1; rsign <= 1; rsign += 2) {
+          for (Coordinate::DimType csign = -1; csign <= 1; csign += 2) {
+            Coordinate delta = Coordinate(static_cast<Coordinate::DimType>(row) * rsign,
+                                          static_cast<Coordinate::DimType>(col) * csign);
+            Coordinate next = cur + delta;
+            if (next.row_ >= 0 && next.col_ >= 0 && next.row_ < passable_map_.rows_ && next.col_ < passable_map_.cols_
+                && passable_map_.get(next)) {
+              if (distances.get(next) == std::numeric_limits<uint16_t>::max()) {
+                // TODO: until we improve the JS api, it's probably fastest to call this last
+                // TODO: we should probably check and remember where buildings are
+                if (from.distSq(next) > visibility_radius || occupied_map.get(next.row_, next.col_) == 0
+                    || from == next) {
+                  distances.set(next, next_dist);
+                  queue.push(next);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  // couldn't reach it. Are we trapped by units?
+  return self_->nullAction();
 }
 
 emscripten::val Pathfinder::pathTowardCheaply(const Coordinate &coordinate) {
