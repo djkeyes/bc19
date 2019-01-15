@@ -16,6 +16,9 @@ struct Coordinate {
   DimType row_; // aka "y"
   DimType col_; // aka "x"
 
+  constexpr Coordinate() : Coordinate(0, 0) {
+  }
+
   constexpr Coordinate(DimType row, DimType col) : row_(row), col_(col) {
   }
 

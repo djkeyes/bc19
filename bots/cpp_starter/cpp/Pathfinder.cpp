@@ -2,12 +2,13 @@
 
 #include <algorithm>
 #include "Pathfinder.h"
+#include "CommonRobot.h"
 
 namespace bc19 {
 
-emscripten::val Pathfinder::singlePassPathFinding(const Coordinate &from,
-                                                  const Coordinate &to,
-                                                  Coordinate::DimSqType max_radius_sq) const {
+emscripten::val Pathfinder::singlePassPathfind(const Coordinate &from,
+                                               const Coordinate &to,
+                                               Coordinate::DimSqType max_radius_sq) const {
   if (from == to) {
     return self_->nullAction();
   }
@@ -53,19 +54,127 @@ emscripten::val Pathfinder::singlePassPathFinding(const Coordinate &from,
   return self_->move(best_delta.col_, best_delta.row_);
 }
 
+template<typename T>
+class CircularQueue {
+ private:
+  std::vector<T> data_;
+  int head_;
+  int tail_;
+  int size_;
+
+ public:
+  explicit CircularQueue(int max_size)
+      : data_(static_cast<typename std::vector<T>::size_type>(max_size)), head_(0), tail_(0), size_(0) {
+  }
+
+  void push(T element) {
+    data_[tail_++] = std::move(element);
+    tail_ %= data_.size();
+    size_++;
+  }
+
+  T pop() {
+    const T result(std::move(data_[head_++]));
+    head_ %= data_.size();
+    size_--;
+    return result;
+  }
+
+  bool empty() {
+    return size_ == 0;
+  }
+};
+
+emscripten::val Pathfinder::bfsPathfind(const Coordinate &from,
+                                        const Coordinate &to,
+                                        const bool allow_diagonals) const {
+  static Grid<uint16_t> distances(passable_map_.rows_, passable_map_.cols_);
+  for (unsigned short &iter : distances.data) {
+    iter = std::numeric_limits<uint16_t>::max();
+  }
+
+  const auto &occupied_map = self_->getVisibleRobotMap();
+
+  CircularQueue<Coordinate> queue(2 * (passable_map_.rows_ + passable_map_.cols_ + 2));
+  // search backwards from the destination
+  // if we're doing more than 1 search, it would make more sense to start at the origin, then back trace the path
+  queue.push(to);
+  distances.set(to, 0);
+  while (!queue.empty()) {
+    const auto cur = queue.pop();
+
+    if (cur == from) {
+      // find which direction came here
+      Coordinate cheapest_dir(1, 0);
+      auto cheapest_cost = std::numeric_limits<uint16_t>::max();
+      if (allow_diagonals) {
+        for (const auto &dir : directions::adjacent_spiral) {
+          const auto prev = cur + dir;
+          if (prev.row_ >= 0 && prev.col_ >= 0 && prev.row_ < passable_map_.rows_ && prev.col_ < passable_map_.cols_) {
+            const auto dist = distances.get(prev);
+            if (dist < cheapest_cost) {
+              cheapest_cost = dist;
+              cheapest_dir = dir;
+            }
+          }
+        }
+      } else {
+        for (const auto &dir : directions::horiz_adjacent) {
+          const auto prev = cur + dir;
+          if (prev.row_ >= 0 && prev.col_ >= 0 && prev.row_ < passable_map_.rows_ && prev.col_ < passable_map_.cols_) {
+            const auto dist = distances.get(prev);
+            if (dist < cheapest_cost) {
+              cheapest_cost = dist;
+              cheapest_dir = dir;
+            }
+          }
+        }
+      }
+      return self_->move(cheapest_dir.col_, cheapest_dir.row_);
+    }
+
+    const uint16_t next_dist = distances.get(cur) + static_cast<const uint16_t>( 1);
+    for (const auto &dir : directions::horiz_adjacent) {
+      const auto next = cur + dir;
+      if (next.row_ >= 0 && next.col_ >= 0 && next.row_ < passable_map_.rows_ && next.col_ < passable_map_.cols_
+          && passable_map_.get(next)) {
+        if (distances.get(next) == std::numeric_limits<uint16_t>::max()) {
+          // TODO: untill we improve the JS api, it's probably fastest to call this last
+          if (occupied_map.get(next.row_, next.col_) == 0) {
+            distances.set(next, next_dist);
+            queue.push(next);
+          }
+        }
+      }
+    }
+  }
+
+  // couldn't reach it. Are we trapped by units?
+  return self_->nullAction();
+}
+
+emscripten::val Pathfinder::dijkstraPathfind(const Coordinate &from,
+                                             const Coordinate &to,
+                                             Coordinate::DimSqType max_radius_sq) const {
+  if (max_radius_sq <= 2) {
+    return bfsPathfind(from, to, max_radius_sq == 2);
+  }
+  // TODO: actually implement this
+  return bfsPathfind(from, to, true);
+}
 
 emscripten::val Pathfinder::pathTowardCheaply(const Coordinate &coordinate) {
   Coordinate
       my_loc(static_cast<Coordinate::DimType>(self_->me().y()), static_cast<Coordinate::DimType>(self_->me().x()));
-  return singlePassPathFinding(my_loc, coordinate, 2);
+  return dijkstraPathfind(my_loc, coordinate, 2);
 }
 
 emscripten::val Pathfinder::pathTowardQuickly(const Coordinate &coordinate) {
   const auto &m = self_->me();
   Coordinate my_loc(static_cast<Coordinate::DimType>(m.y()), static_cast<Coordinate::DimType>(m.x()));
-  return singlePassPathFinding(my_loc,
-                               coordinate,
-                               static_cast<const Coordinate::DimSqType>(specs::units[static_cast<int>(m.unit())].speed));
+  return dijkstraPathfind(my_loc,
+                          coordinate,
+                          static_cast<const Coordinate::DimSqType>(specs::units[static_cast<int>(m.unit())].speed));
 }
 
 Coordinate Pathfinder::getNearbyPassableTile(const Coordinate &coordinate) const {
@@ -96,5 +205,6 @@ Coordinate Pathfinder::getNearbyPassableTile(const Coordinate &coordinate) const
     }
   }
 }
+
 }
 
