@@ -6,6 +6,7 @@
 #include "CastleTalker.h"
 #include "CommonRobot.h"
 #include "CastleRobot.h"
+#include "PilgrimRobot.h"
 
 using std::unique_ptr;
 using std::make_unique;
@@ -30,18 +31,6 @@ using specs::Unit;
 class NoOpRobot : public CommonRobot {
  public:
   explicit NoOpRobot(const emscripten::val &jsAbstractRobot) : CommonRobot(jsAbstractRobot) {
-  }
-
-  emscripten::val onTurn() override {
-    return nullAction();
-  }
-};
-
-class PilgrimRobot : public CommonRobot {
- private:
-
- public:
-  explicit PilgrimRobot(const emscripten::val &jsAbstractRobot) : CommonRobot(jsAbstractRobot) {
   }
 
   emscripten::val onTurn() override {

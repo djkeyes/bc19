@@ -23,7 +23,9 @@ set(SRC_FILES
         CastleTalker.h
         CommonRobot.h
         CastleRobot.cpp
-        CastleRobot.h)
+        CastleRobot.h
+        PilgrimRobot.cpp
+        PilgrimRobot.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})
