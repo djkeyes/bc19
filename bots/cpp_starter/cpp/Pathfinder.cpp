@@ -160,6 +160,11 @@ emscripten::val Pathfinder::bfsPathfind(const Coordinate &from,
 emscripten::val Pathfinder::dijkstraPathfind(const Coordinate &from,
                                              const Coordinate &to,
                                              Coordinate::DimSqType max_radius_sq) const {
+  if (self_->fuel() < specs::units[static_cast<int>(self_->me().unit())].fuel_per_move) {
+    // can't do anything =/
+    return self_->nullAction();
+  }
+
   if (max_radius_sq <= 2) {
     return bfsPathfind(from, to, max_radius_sq == 2);
   }
