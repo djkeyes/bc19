@@ -5,9 +5,9 @@
 
 namespace bc19 {
 
-emscripten::val Pathfinder::badPathFinding(const Coordinate &from,
-                                           const Coordinate &to,
-                                           Coordinate::DimSqType max_radius_sq) const {
+emscripten::val Pathfinder::singlePassPathFinding(const Coordinate &from,
+                                                  const Coordinate &to,
+                                                  Coordinate::DimSqType max_radius_sq) const {
   if (from == to) {
     return self_->nullAction();
   }
@@ -53,18 +53,19 @@ emscripten::val Pathfinder::badPathFinding(const Coordinate &from,
   return self_->move(best_delta.col_, best_delta.row_);
 }
 
+
 emscripten::val Pathfinder::pathTowardCheaply(const Coordinate &coordinate) {
   Coordinate
       my_loc(static_cast<Coordinate::DimType>(self_->me().y()), static_cast<Coordinate::DimType>(self_->me().x()));
-  return badPathFinding(my_loc, coordinate, 2);
+  return singlePassPathFinding(my_loc, coordinate, 2);
 }
 
 emscripten::val Pathfinder::pathTowardQuickly(const Coordinate &coordinate) {
   const auto &m = self_->me();
   Coordinate my_loc(static_cast<Coordinate::DimType>(m.y()), static_cast<Coordinate::DimType>(m.x()));
-  return badPathFinding(my_loc,
-                        coordinate,
-                        static_cast<const Coordinate::DimSqType>(specs::units[static_cast<int>(m.unit())].speed));
+  return singlePassPathFinding(my_loc,
+                               coordinate,
+                               static_cast<const Coordinate::DimSqType>(specs::units[static_cast<int>(m.unit())].speed));
 }
 
 Coordinate Pathfinder::getNearbyPassableTile(const Coordinate &coordinate) const {

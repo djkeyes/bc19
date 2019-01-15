@@ -50,9 +50,11 @@ class Pathfinder {
   // TODO: there's significant doubt in the world about whether vector<bool> is faster than vector<char>. We should
   // profile this.
   Grid<uint8_t> passable_map_;
-  emscripten::val badPathFinding(const Coordinate &from,
-                                 const Coordinate &to,
-                                 Coordinate::DimSqType max_radius_sq) const;
+
+  // Only does a single step of best-first-search. Avoid using this if feasible.
+  emscripten::val singlePassPathFinding(const Coordinate &from,
+                                        const Coordinate &to,
+                                        Coordinate::DimSqType max_radius_sq) const;
 
  public:
   explicit Pathfinder(AbstractNativeRobot *const self)
@@ -61,6 +63,7 @@ class Pathfinder {
 
   emscripten::val pathTowardCheaply(const Coordinate &coordinate);
   emscripten::val pathTowardQuickly(const Coordinate &coordinate);
+
   Coordinate getNearbyPassableTile(const Coordinate &coordinate) const;
 };
 
