@@ -2,14 +2,18 @@ import {BCAbstractRobot} from 'battlecode';
 
 import Module from './wasm_lib_GENERATED.js'
 
-// One slow part of Wasm loading is simply reading the file into memory.
-// Emscripten's base64 string decoder isn't very efficient, so substitute our
-// own implementation, and run it during robot startup time.
-// TODO: we can furthermore pre-load the Webassembly.Module by implementing "instantiateWasm"
-let ModuleWithCallbacks = {};
+// Two slow parts of Emscripten are loading the binary data and instantiating
+// WebAssembly module. We can do these two steps ahead of time, since they are
+// fast enough to run during initialization.
 import {wasmLoader} from './wasm_loader_GENERATED.js';
-let wasmBinary = wasmLoader();
-ModuleWithCallbacks["wasmBinary"] = wasmBinary;
+
+let ModuleWithCallbacks = {};
+let module = new WebAssembly.Module(wasmLoader());
+ModuleWithCallbacks["instantiateWasm"] = function (info, receiveInstanceCallback) {
+    let instance = new WebAssembly.Instance(module, info)
+    receiveInstanceCallback(instance, module);
+    return instance.exports;
+};
 
 let bindings = null;
 let nativeRobot = null;
