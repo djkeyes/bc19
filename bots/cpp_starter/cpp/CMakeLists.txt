@@ -18,7 +18,8 @@ set(SRC_FILES
         cpp_starter.cpp
         cpp_starter.h
         my_robot.cpp
-        fast_rand.h)
+        fast_rand.h
+        UnitCounts.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})

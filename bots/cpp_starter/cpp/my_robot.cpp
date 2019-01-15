@@ -2,6 +2,7 @@
 
 #include "cpp_starter.h"
 #include "fast_rand.h"
+#include "UnitCounts.h"
 
 using std::to_string;
 using std::unique_ptr;
@@ -32,33 +33,6 @@ constexpr std::array<pair<int, int>, 8>
 //  explicit NavRobot(AbstractNativeRobot *const this_robot) : self_(this_robot) {}
 //};
 
-/**
- * Container for the count of each unit, to be approximated by some means.
- */
-struct UnitCounts {
-  int num_unknown_ = 0;
-  int num_castles_ = 0;
-  int num_churches_ = 0;
-  int num_pilgrims_ = 0;
-  int num_crusaders_ = 0;
-  int num_preachers_ = 0;
-  int num_prophets_ = 0;
-
-  int movableUnitsBuilt() const {
-    return num_pilgrims_ + num_crusaders_ + num_preachers_ + num_prophets_;
-  }
-};
-
-// TODO: split things into multiple files, and put this in namespace std
-std::string UCto_string(const UnitCounts &unit_counts) {
-  return "UnitCounts{" + ("num_unknown_: " + to_string(unit_counts.num_unknown_)) + ", "
-      + ("num_castles_: " + to_string(unit_counts.num_castles_)) + ", "
-      + ("num_churches_: " + to_string(unit_counts.num_churches_)) + ", "
-      + ("num_pilgrims_: " + to_string(unit_counts.num_pilgrims_)) + ", "
-      + ("num_crusaders_: " + to_string(unit_counts.num_crusaders_)) + ", "
-      + ("num_preachers_: " + to_string(unit_counts.num_preachers_)) + ", "
-      + ("num_prophets_: " + to_string(unit_counts.num_prophets_)) + "}";
-}
 
 /**
  * Encapsulates CastleTalk message encoding and decoding
