@@ -29,7 +29,7 @@ struct UnitCounts {
 namespace std {
 
 // TODO: only enable this in debug mode
-std::string to_string(const bc19::UnitCounts &unit_counts) {
+inline std::string to_string(const bc19::UnitCounts &unit_counts) {
   return "UnitCounts{" + ("num_unknown_: " + std::to_string(unit_counts.num_unknown_)) + ", "
       + ("num_castles_: " + std::to_string(unit_counts.num_castles_)) + ", "
       + ("num_churches_: " + std::to_string(unit_counts.num_churches_)) + ", "
