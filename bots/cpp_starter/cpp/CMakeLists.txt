@@ -21,7 +21,9 @@ set(SRC_FILES
         fast_rand.h
         UnitCounts.h
         CastleTalker.h
-        CommonRobot.h)
+        CommonRobot.h
+        CastleRobot.cpp
+        CastleRobot.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})
