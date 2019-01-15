@@ -401,9 +401,9 @@ class Robot {
 class AbstractNativeRobot {
  private:
   // TODO: I think this is reference counted. Does it ever get deallocated?
-  emscripten::val jsAbstractRobot_;
 
  protected:
+  emscripten::val jsAbstractRobot_;
   explicit AbstractNativeRobot(emscripten::val jsAbstractRobot) : jsAbstractRobot_(jsAbstractRobot) {
   }
 
@@ -624,17 +624,16 @@ class AbstractNativeRobot {
    *
    * @param id - The id of the robot to retrieve
    */
-  //   Robot getRobot(int id) {
-  //    // TODO
-  //    return -1;
-  //  }
+  Robot getRobot(int id) {
+    return Robot(jsAbstractRobot_.call<emscripten::val>("getRobot", id));
+  }
 
   /**
    * Returns `true` if the given robot object is visible.
    *
    * @param robot - The robot to check
    */
-  bool isVisible(Robot &robot) {
+  bool isVisible(Robot &robot) const {
     // TODO: we can implement this locally if we make a separate boolean for visibility in the robot class
     return jsAbstractRobot_.call<bool>("isVisible", robot.jsRobot());
   }

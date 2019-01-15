@@ -9,8 +9,17 @@
 namespace bc19 {
 template<typename T>
 struct Grid {
+  Grid() : Grid(0, 0) {
+  }
+
   Grid(int rows, int cols)
       : rows_(rows), cols_(cols), data(static_cast<typename std::vector<T>::size_type>(cols * rows)) {
+  }
+
+  void resize(int rows, int cols) {
+    rows_ = rows;
+    cols_ = cols;
+    data.resize(static_cast<typename std::vector<T>::size_type>(cols * rows));
   }
 
   void set(int row, int col, T val) {
@@ -26,6 +35,14 @@ struct Grid {
   }
 
   const T &get(const Coordinate &coord) const {
+    return get(coord.row_, coord.col_);
+  }
+
+  T &get(int row, int col) {
+    return data[row * cols_ + col];
+  }
+
+  T &get(const Coordinate &coord) {
     return get(coord.row_, coord.col_);
   }
 

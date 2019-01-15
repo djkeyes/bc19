@@ -13,7 +13,7 @@ const std::vector<specs::Unit>
     BuildOrder::PlCrCr_build_order = {Unit::PILGRIM, Unit::CRUSADER, Unit::CRUSADER};
 
 const std::vector<specs::Unit>
-    BuildOrder::PhPhPhPc_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM};
+    BuildOrder::PcPcPcPl_build_order = {Unit::PREACHER, Unit::PREACHER, Unit::PREACHER, Unit::PILGRIM};
 const std::vector<specs::Unit>
     BuildOrder::PlPlPlPlPlPlPlPlPlPl_build_order = {
     Unit::PILGRIM,
@@ -37,18 +37,12 @@ const std::vector<specs::Unit>BuildOrder::CrCrPlPlPlPlPlPl_build_order = {
     Unit::PILGRIM,
     Unit::PILGRIM
 };
-const std::vector<specs::Unit>BuildOrder::CrCrCrPlPlPlPl_build_order =
-    {Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM};
-const std::vector<specs::Unit>BuildOrder::CrCrCrCrPlPl_build_order =
-    {Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::PILGRIM, Unit::PILGRIM};
-const std::vector<specs::Unit>BuildOrder::PlPlCrCrCrCr_build_order =
-    {Unit::PILGRIM, Unit::PILGRIM, Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER};
-const std::vector<specs::Unit>BuildOrder::PcPcPlPlPlPlPl_build_order =
-    {Unit::PREACHER, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM};
+const std::vector<specs::Unit>BuildOrder::PhPhPlPlPlPlPl_build_order =
+    {Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM, Unit::PILGRIM};
 const std::vector<specs::Unit>
-    BuildOrder::PcPcPcPlPl_build_order = {Unit::PREACHER, Unit::PREACHER, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM};
+    BuildOrder::PhPhPhPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
 const std::vector<specs::Unit>
-    BuildOrder::PcPcPhPlPl_build_order = {Unit::PREACHER, Unit::PREACHER, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
+    BuildOrder::PhPhPcPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM};
 
 emscripten::val CastleRobot::onTurn() {
   castle_talker_.processCastleTalks(unit_counts_);

@@ -20,7 +20,7 @@ class BuildOrder {
   std::vector<specs::Unit> const *const initial_build_order_;
   static const std::vector<specs::Unit> PlCrCr_build_order;
   // 3 mage rush
-  static const std::vector<specs::Unit> PhPhPhPc_build_order;
+  static const std::vector<specs::Unit> PcPcPcPl_build_order;
   // all econ
   static const std::vector<specs::Unit> PlPlPlPlPlPlPlPlPlPl_build_order;
   // 2 knight defence
@@ -32,11 +32,11 @@ class BuildOrder {
   // 4 knight defence, workers first
   static const std::vector<specs::Unit> PlPlCrCrCrCr_build_order;
   // 2 ranger defence?
-  static const std::vector<specs::Unit> PcPcPlPlPlPlPl_build_order;
+  static const std::vector<specs::Unit> PhPhPlPlPlPlPl_build_order;
   // 3 ranger defence?
-  static const std::vector<specs::Unit> PcPcPcPlPl_build_order;
+  static const std::vector<specs::Unit> PhPhPhPlPl_build_order;
   // 2 ranger + mage defence?
-  static const std::vector<specs::Unit> PcPcPhPlPl_build_order;
+  static const std::vector<specs::Unit> PhPhPcPlPl_build_order;
 
   /**
    * The choice of the first few units is very important. If the round num is low enough, check nextToBuild instead
@@ -49,7 +49,8 @@ class BuildOrder {
 
  public:
   explicit BuildOrder(AbstractNativeRobot *const this_robot)
-      : self_(this_robot), initial_build_order_(&PhPhPhPc_build_order) {
+      : self_(this_robot),
+      initial_build_order_(self_->me().team() == 0 ? &PcPcPcPl_build_order : &PhPhPhPlPl_build_order) {
   }
 
   /**
@@ -63,7 +64,16 @@ class BuildOrder {
       }
     }
     // TODO: if the initial build is exhausted, switch to an adaptive strategy
-    return specs::Unit::CRUSADER;
+    static int count = 0;
+    ++count;
+    count %= 3;
+    if (count == 0) {
+      return specs::Unit::PREACHER;
+    } else if (count == 1) {
+      return specs::Unit::PILGRIM;
+    } else {
+      return specs::Unit::PROPHET;
+    }
   }
 };
 

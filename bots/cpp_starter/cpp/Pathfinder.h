@@ -54,6 +54,14 @@ class Pathfinder {
 
   Coordinate getNearbyPassableTile(const Coordinate &coordinate) const;
   emscripten::val pathToRandomTile();
+
+  bool passable(const Coordinate &coord) const {
+    return passable_map_.get(coord);
+  }
+
+  bool onMap(const Coordinate coord) const {
+    return coord.row_ >= 0 && coord.col_ >= 0 && coord.row_ < passable_map_.rows_ && coord.col_ < passable_map_.cols_;
+  }
 };
 
 }
