@@ -94,17 +94,26 @@ emscripten::val AttackerRobot::drawValueMaps() {
   }
   attack_coord_.reset();
 
-  // we stand still, they shoot us
-  for (const auto &robot : nearby_enemies_) {
-    Coordinate their_loc(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
-    specs::Unit their_type(robot.unit());
-    const auto &their_specs = specs::units[static_cast<int>(their_type)];
-    const auto our_dist_sq = my_loc.distSq(their_loc);
+  {
+    double damage_taken = 0;
+    // we stand still, they shoot us
+    for (const auto &robot : nearby_enemies_) {
+      Coordinate their_loc(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
+      specs::Unit their_type(robot.unit());
+      const auto &their_specs = specs::units[static_cast<int>(their_type)];
+      const auto our_dist_sq = my_loc.distSq(their_loc);
 
-    // if they can shoot us, the value of staying here is lower
-    if (withinAttackRadius(their_type, our_dist_sq)) {
-      tile_values_.get(my_loc) -= their_specs.attack_damage;
+      // if they can shoot us, the value of staying here is lower
+      if (withinAttackRadius(their_type, our_dist_sq)) {
+        damage_taken += their_specs.attack_damage;
+      }
     }
+    // TODO: remove copy pasta
+    if (damage_taken >= m.health()) {
+      // don't want to die
+      damage_taken *= 100;
+    }
+    tile_values_.get(my_loc) -= damage_taken;
   }
 
   // we move, they shoot us
@@ -125,7 +134,7 @@ emscripten::val AttackerRobot::drawValueMaps() {
       Coordinate their_loc(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
       specs::Unit their_type(robot.unit());
       const auto &their_specs = specs::units[static_cast<int>(their_type)];
-      const auto our_dist_sq = my_loc.distSq(their_loc);
+      const auto our_dist_sq = tile.distSq(their_loc);
       // if they can shoot us, the value of staying here is lower
       if (withinAttackRadius(their_type, our_dist_sq)) {
         damage_taken += their_specs.attack_damage;
@@ -137,7 +146,7 @@ emscripten::val AttackerRobot::drawValueMaps() {
     }
     if (damage_taken >= m.health()) {
       // don't want to die
-      damage_taken *= 1000;
+      damage_taken *= 100;
     }
     tile_values_.get(tile) -= damage_taken;
   }
@@ -159,6 +168,15 @@ emscripten::val AttackerRobot::drawValueMaps() {
   //    tile_values_.get(tile) += computeBestValueAttack(my_type, tile);
   //  }
 
+
+  //  for (int row = std::max(my_loc.row_ - 6, 0); row <= std::min(my_loc.row_ + 6, tile_values_.cols_); ++row) {
+  //    std::string foo = "";
+  //    for (int col = std::max(my_loc.col_ - 6, 0); col <= std::min(my_loc.col_ + 6, tile_values_.cols_); ++col) {
+  //      foo += "[" + (tile_versions_.get(row, col) == version_ ? std::to_string(tile_values_.get(row, col)) : "  ////  ")
+  //          + "]";
+  //    }
+  //    log(foo);
+  //  }
 
   // choose the best
   double max_val = tile_values_.get(my_loc);
@@ -182,12 +200,15 @@ emscripten::val AttackerRobot::drawValueMaps() {
   if (best_tile == my_loc) {
     if (attack_coord_) {
       const auto offset = *attack_coord_ - my_loc;
+      //      log("attacking by " + std::to_string(offset));
       return attack(offset.col_, offset.row_);
     } else {
+      //      log("staying still");
       return nullAction();
     }
   } else {
     const auto offset = best_tile - my_loc;
+    //    log("moving by " + std::to_string(offset));
     return move(offset.col_, offset.row_);
   }
 }
