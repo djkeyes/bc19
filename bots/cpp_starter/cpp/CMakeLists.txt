@@ -25,7 +25,12 @@ set(SRC_FILES
         CastleRobot.cpp
         CastleRobot.h
         PilgrimRobot.cpp
-        PilgrimRobot.h)
+        PilgrimRobot.h
+        DeterministicResourceClusterer.cpp
+        DeterministicResourceClusterer.h
+        Coordinate.h
+        Pathfinder.cpp
+        Pathfinder.h)
 
 # this must be shared, because em++ magic is applied during linking.
 add_library(${ARTIFACT_NAME} SHARED ${SRC_FILES})

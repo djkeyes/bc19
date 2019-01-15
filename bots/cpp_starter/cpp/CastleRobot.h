@@ -49,7 +49,7 @@ class BuildOrder {
 
  public:
   explicit BuildOrder(AbstractNativeRobot *const this_robot)
-      : self_(this_robot), initial_build_order_(&PlCrCr_build_order) {
+      : self_(this_robot), initial_build_order_(&PlPlPlPlPlPlPlPlPlPl_build_order) {
   }
 
   /**

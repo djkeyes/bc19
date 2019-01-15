@@ -336,7 +336,7 @@ class Robot {
    *
    * Only available if {@link BCAbstractRobot.me} equals this robot.
    */
-  int fuel() {
+  int fuel() const {
     // TODO: assert r = this.me
     return jsRobot_["fuel"].as<int>();
   }
@@ -346,7 +346,7 @@ class Robot {
    *
    * Only available if {@link BCAbstractRobot.me} equals this robot.
    */
-  int karbonite() {
+  int karbonite() const {
     // TODO: assert r = this.me
     return jsRobot_["karbonite"].as<int>();
   }
@@ -436,7 +436,7 @@ class AbstractNativeRobot {
   /**
    * The robot object of the playing robot.
    */
-  Robot me() {
+  Robot me() const {
     // TODO: for some frequently used methods, it's probably better to cache
     return Robot::fromSelfRobot(jsAbstractRobot_);
   }
@@ -477,25 +477,6 @@ class AbstractNativeRobot {
   //  last_offer: number
   //  [][] |
   //  null;
-
-  /**
-   * The full map represented as a boolean grid where `true` indicates passable and `false` indicates impassable.
-   */
-  //  map: boolean
-  //  [][];
-
-  /**
-   * The karbonite map represented as a boolean grid where `true` indicates that karbonite is present and `false` indicates that it is not.
-   */
-  //  karbonite_map: boolean
-  //  [][];
-
-  /**
-   * The fuel map represented as a boolean grid where `true` indicates that fuel is present and `false` indicates that it is not.
-   */
-  //  fuel_map: boolean
-  //  [][];
-
 
   /**
    * Print a message to the command line. You cannot use ordinary `console.log` in Battlecode for security reasons.
@@ -609,16 +590,9 @@ class AbstractNativeRobot {
    * @param karbonite - The amount of karbonite to give to the receiving robot
    * @param fuel - The amount of fuel to give to the receiving robot
    */
-  //  give(
-  //      dx: number,
-  //      dy: number,
-  //      karbonite: number,
-  //      fuel: number,
-  //  ):
-  //  GiveAction;
-  emscripten::val give(const int dx, const int dy, const int karbonite, const int number) const {
+  emscripten::val give(const int dx, const int dy, const int karbonite, const int fuel) const {
     // TODO: reimplement the JS logic here, to avoid unnecessary debug checks
-    return jsAbstractRobot_.call<emscripten::val>("give", dy, dy, karbonite, number);
+    return jsAbstractRobot_.call<emscripten::val>("give", dx, dy, karbonite, fuel);
   }
 
   /**
@@ -670,8 +644,9 @@ class AbstractNativeRobot {
    *
    * @param robot - The robot to check
    */
-  //
-  //  isRadioing(robot: Robot): boolean;
+  bool isRadioing(Robot &robot) {
+    return robot.signal() > 0;
+  }
 
   /**
    * Wrapper class for a 2d grid of numbers. This abstracts away the underlying implementation, which may change for
@@ -727,35 +702,35 @@ class AbstractNativeRobot {
   /**
    * Returns {@link GameState.shadow}.
    */
-  MapInt getVisibleRobotMap() {
+  MapInt getVisibleRobotMap() const {
     return MapInt(jsAbstractRobot_.call<emscripten::val>("getVisibleRobotMap"));
   }
 
   /**
    * Returns {@link map}.
    */
-  MapBool getPassableMap() {
+  MapBool getPassableMap() const {
     return MapBool(jsAbstractRobot_.call<emscripten::val>("getPassableMap"));
   }
 
   /**
    * Returns {@link karbonite_map}.
    */
-  MapBool getKarboniteMap() {
+  MapBool getKarboniteMap() const {
     return MapBool(jsAbstractRobot_.call<emscripten::val>("getKarboniteMap"));
   }
 
   /**
    * Returns {@link fuel_map}.
    */
-  MapBool getFuelMap() {
+  MapBool getFuelMap() const {
     return MapBool(jsAbstractRobot_.call<emscripten::val>("getFuelMap"));
   }
 
   /**
    * Returns {@link GameState.visible}.
    */
-  emscripten::val getVisibleRobots() {
+  emscripten::val getVisibleRobots() const {
     // TODO: this may also be worth caching, or at least converting to typed instances
     return jsAbstractRobot_["_bc_game_state"]["visible"];
   }
