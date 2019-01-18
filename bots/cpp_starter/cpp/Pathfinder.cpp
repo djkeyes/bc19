@@ -113,6 +113,12 @@ emscripten::val Pathfinder::bfsPathfind(const Coordinate &from,
         for (const auto &dir : directions::adjacent_spiral) {
           const auto prev = cur + dir;
           if (prev.row_ >= 0 && prev.col_ >= 0 && prev.row_ < passable_map_.rows_ && prev.col_ < passable_map_.cols_) {
+            if (prev == to) {
+              // edge case: the destination itself could be occupied
+              if (occupied_map.get(prev.row_, prev.col_)) {
+                continue;
+              }
+            }
             const auto dist = distances.get(prev);
             if (dist < cheapest_cost) {
               cheapest_cost = dist;
@@ -124,6 +130,12 @@ emscripten::val Pathfinder::bfsPathfind(const Coordinate &from,
         for (const auto &dir : directions::horiz_adjacent) {
           const auto prev = cur + dir;
           if (prev.row_ >= 0 && prev.col_ >= 0 && prev.row_ < passable_map_.rows_ && prev.col_ < passable_map_.cols_) {
+            if (prev == to) {
+              // edge case: the destination itself could be occupied
+              if (occupied_map.get(prev.row_, prev.col_)) {
+                continue;
+              }
+            }
             const auto dist = distances.get(prev);
             if (dist < cheapest_cost) {
               cheapest_cost = dist;
@@ -206,6 +218,12 @@ emscripten::val Pathfinder::dijkstraPathfind(const Coordinate &from,
               const Coordinate prev = cur + delta;
               if (prev.row_ >= 0 && prev.col_ >= 0 && prev.row_ < passable_map_.rows_
                   && prev.col_ < passable_map_.cols_) {
+                if (prev == to) {
+                  // edge case: the destination itself could be occupied
+                  if (occupied_map.get(prev.row_, prev.col_)) {
+                    continue;
+                  }
+                }
                 const auto dist = distances.get(prev);
                 if (dist < cheapest_cost) {
                   cheapest_cost = dist;
