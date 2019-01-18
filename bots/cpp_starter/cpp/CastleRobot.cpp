@@ -9,35 +9,35 @@ using std::pair;
 
 namespace bc19 {
 
-const std::vector<specs::Unit>
-    BuildOrder::PlCrCr_build_order = {Unit::PILGRIM, Unit::CRUSADER, Unit::CRUSADER};
-
+//const std::vector<specs::Unit>
+//    BuildOrder::PlCrCr_build_order = {Unit::PILGRIM, Unit::CRUSADER, Unit::CRUSADER};
+//
 const std::vector<specs::Unit>
     BuildOrder::PcPcPcPl_build_order = {Unit::PREACHER, Unit::PREACHER, Unit::PREACHER, Unit::PILGRIM};
-const std::vector<specs::Unit>
-    BuildOrder::PlPlPlPlPlPlPlPlPlPl_build_order = {
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM,
-    Unit::PILGRIM
-};
-const std::vector<specs::Unit>BuildOrder::CrCrCrCrPlPl_build_order = {
-    Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::PILGRIM, Unit::PILGRIM
-};
-const std::vector<specs::Unit>
-    BuildOrder::PhPhPhPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
-const std::vector<specs::Unit>
-    BuildOrder::PhPhPcPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM};
-const std::vector<specs::Unit>
-    BuildOrder::PlPhPhPhPhPl_build_order = {
-    Unit::PILGRIM, Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM
-};
+//const std::vector<specs::Unit>
+//    BuildOrder::PlPlPlPlPlPlPlPlPlPl_build_order = {
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM,
+//    Unit::PILGRIM
+//};
+//const std::vector<specs::Unit>BuildOrder::CrCrCrCrPlPl_build_order = {
+//    Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::CRUSADER, Unit::PILGRIM, Unit::PILGRIM
+//};
+//const std::vector<specs::Unit>
+//    BuildOrder::PhPhPhPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM, Unit::PILGRIM};
+//const std::vector<specs::Unit>
+//    BuildOrder::PhPhPcPlPl_build_order = {Unit::PROPHET, Unit::PROPHET, Unit::PREACHER, Unit::PILGRIM, Unit::PILGRIM};
+//const std::vector<specs::Unit>
+//    BuildOrder::PlPhPhPhPhPl_build_order = {
+//    Unit::PILGRIM, Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PROPHET, Unit::PILGRIM
+//};
 
 emscripten::val CastleRobot::onTurn() {
   castle_talker_.processCastleTalks(unit_counts_);

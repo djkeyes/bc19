@@ -18,19 +18,19 @@ class BuildOrder {
   AbstractNativeRobot *const self_;
 
   std::vector<specs::Unit> const *const initial_build_order_;
-  static const std::vector<specs::Unit> PlCrCr_build_order;
+//  static const std::vector<specs::Unit> PlCrCr_build_order;
   // 3 mage rush
   static const std::vector<specs::Unit> PcPcPcPl_build_order;
-  // all econ
-  static const std::vector<specs::Unit> PlPlPlPlPlPlPlPlPlPl_build_order;
-  // 4 knight defence
-  static const std::vector<specs::Unit> CrCrCrCrPlPl_build_order;
-  // 3 ranger defence?
-  static const std::vector<specs::Unit> PhPhPhPlPl_build_order;
-  // 2 ranger + mage defence?
-  static const std::vector<specs::Unit> PhPhPcPlPl_build_order;
-  // 4 ranger defence, but pilgrim first
-  static const std::vector<specs::Unit> PlPhPhPhPhPl_build_order;
+//  // all econ
+//  static const std::vector<specs::Unit> PlPlPlPlPlPlPlPlPlPl_build_order;
+//  // 4 knight defence
+//  static const std::vector<specs::Unit> CrCrCrCrPlPl_build_order;
+//  // 3 ranger defence?
+//  static const std::vector<specs::Unit> PhPhPhPlPl_build_order;
+//  // 2 ranger + mage defence?
+//  static const std::vector<specs::Unit> PhPhPcPlPl_build_order;
+//  // 4 ranger defence, but pilgrim first
+//  static const std::vector<specs::Unit> PlPhPhPhPhPl_build_order;
 
   /**
    * The choice of the first few units is very important. If the round num is low enough, check nextToBuild instead
@@ -43,9 +43,7 @@ class BuildOrder {
 
  public:
   explicit BuildOrder(AbstractNativeRobot *const this_robot)
-      : self_(this_robot),
-      initial_build_order_(
-          self_->me().team() == 0 ? &PcPcPcPl_build_order : &PcPcPcPl_build_order/*PlPhPhPhPhPl_build_order*/) {
+      : self_(this_robot), initial_build_order_(&PcPcPcPl_build_order) {
   }
 
   /**
