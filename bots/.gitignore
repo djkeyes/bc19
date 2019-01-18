@@ -1,7 +1,7 @@
 # battlecode 2019 replay files
 *.bc19
 
-# WebStorm project files
+# WebStorm & Clion project files
 .idea/
 
 # generated emscripten files
