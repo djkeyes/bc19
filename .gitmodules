@@ -1,0 +1,3 @@
+[submodule "starters/bc19-cpp-starter"]
+	path = starters/bc19-cpp-starter
+	url = git@github.com:djkeyes/bc19-cpp-starter.git
