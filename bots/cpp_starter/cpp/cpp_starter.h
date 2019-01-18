@@ -276,7 +276,7 @@ class Robot {
    * Always available.
    */
   int id() const {
-    auto val = jsRobot_["id"];
+    return jsRobot_["id"].as<int>();
   }
 
   /**
