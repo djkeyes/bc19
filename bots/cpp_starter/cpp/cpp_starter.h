@@ -212,14 +212,14 @@ constexpr std::array<UnitSpecs, 6> units = {{{
     /*ATTACK_FUEL_COST*/ -1,
     /*DAMAGE_SPREAD*/ -1
 }, {
-    /*CONSTRUCTION_KARBONITE*/ 20,
+    /*CONSTRUCTION_KARBONITE*/ 15,
     /*CONSTRUCTION_FUEL*/ 50,
     /*KARBONITE_CAPACITY*/ 20,
     /*FUEL_CAPACITY*/ 100,
     /*SPEED*/ 9,
     /*FUEL_PER_MOVE*/ 1,
     /*STARTING_HP*/ 40,
-    /*VISION_RADIUS*/ 36,
+    /*VISION_RADIUS*/ 49,
     /*ATTACK_DAMAGE*/ 10,
     /*ATTACK_RADIUS*/ {{1, 16}},
     /*ATTACK_FUEL_COST*/ 10,
