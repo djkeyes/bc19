@@ -259,8 +259,7 @@ class Robot {
   emscripten::val jsRobot_;
 
  public:
-  // TODO: make various factory methods for this
-  Robot(emscripten::val jsRobot) : jsRobot_(jsRobot) {
+  explicit Robot(emscripten::val jsRobot) : jsRobot_(jsRobot) {
   }
 
   static Robot fromSelfRobot(const emscripten::val &jsAbstractRobot) {
@@ -277,8 +276,7 @@ class Robot {
    * Always available.
    */
   int id() const {
-    // TODO
-    return -1;
+    auto val = jsRobot_["id"];
   }
 
   /**
@@ -399,11 +397,9 @@ class Robot {
 };
 
 class AbstractNativeRobot {
- private:
-  // TODO: I think this is reference counted. Does it ever get deallocated?
-
  protected:
   emscripten::val jsAbstractRobot_;
+
   explicit AbstractNativeRobot(emscripten::val jsAbstractRobot) : jsAbstractRobot_(jsAbstractRobot) {
   }
 
@@ -445,8 +441,7 @@ class AbstractNativeRobot {
    * The id of the playing robot.
    */
   int id() {
-    // TODO
-    return -1;
+    return jsAbstractRobot_["id"].as<int>();
   }
 
   /**
