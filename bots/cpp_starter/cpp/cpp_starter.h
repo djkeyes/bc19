@@ -75,7 +75,7 @@ constexpr int max_id = 4096;
 /**
  * The id of the red team (default: 0).
  */
-constexpr int red = 1;
+constexpr int red = 0;
 
 /**
  * The id of the blue team (default: 1).
