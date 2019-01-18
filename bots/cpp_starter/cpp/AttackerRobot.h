@@ -16,6 +16,7 @@ class AttackerRobot : public CommonRobot {
   DeterministicResourceClusterer clusterer_;
 
   std::vector<Robot> nearby_enemies_;
+  std::vector<Robot> nearby_allies_;
   std::optional<Coordinate> nearby_castle_;
   bool is_castle_under_attack_;
   Grid<double> tile_values_;

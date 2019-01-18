@@ -42,7 +42,8 @@ void AttackerRobot::parseNearbyUnits() {
   nearby_castle_.reset();
   is_castle_under_attack_ = false;
 
-  std::vector<Robot> result;
+  nearby_enemies_.clear();
+  nearby_allies_.clear();
   const auto &visible_robots = getVisibleRobots();
   const auto &length = visible_robots["length"].as<int>();
   const auto &us = me().team();
@@ -52,15 +53,15 @@ void AttackerRobot::parseNearbyUnits() {
       continue;
     }
     if (robot.team() != us) {
-      result.emplace_back(robot);
+      nearby_enemies_.emplace_back(robot);
     } else {
+      nearby_allies_.emplace_back(robot);
       if (robot.unit() == specs::Unit::CASTLE) {
         nearby_castle_ =
             Coordinate(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
       }
     }
   }
-  nearby_enemies_ = result;
   if (nearby_castle_) {
     for (const auto &enemy : nearby_enemies_) {
       if (nearby_castle_->distSq(Coordinate(static_cast<Coordinate::DimType>(enemy.y()),
@@ -208,6 +209,23 @@ emscripten::val AttackerRobot::drawValueMaps() {
   //    }
   //    log(foo);
   //  }
+
+  // pragmatically speaking, we don't really want to stand next to allies if there are tanks nearby
+  // ...and there are always tanks
+  for (const auto &robot : nearby_allies_) {
+    Coordinate their_loc(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
+    for (const auto &dir : directions::adjacent_spiral) {
+      const auto &tile = their_loc + dir;
+      const auto our_dist_sq = tile.distSq(their_loc);
+      // encourage diagonal movement a little
+      const auto distsq = dir.distSq(Coordinate());
+      if (our_dist_sq <= my_specs.speed) {
+        if (tile_versions_.get(tile) == version_) {
+          tile_values_.get(tile) -= 20.0f / distsq;
+        }
+      }
+    }
+  }
 
   // choose the best
   double max_val = tile_values_.get(my_loc);
