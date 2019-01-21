@@ -276,9 +276,6 @@ double AttackerRobot::computeBestValueAttack(const specs::Unit &my_type, const C
       if (!pathfinder_.onMap(center)) {
         continue;
       }
-      if (!pathfinder_.passable(center)) {
-        continue;
-      }
       for (int dr = -1; dr <= 1; ++dr) {
         for (int dc = -1; dc <= 1; ++dc) {
           const auto
