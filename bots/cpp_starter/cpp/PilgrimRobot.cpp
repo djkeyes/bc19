@@ -23,7 +23,11 @@ emscripten::val PilgrimRobot::onTurn() {
           gathering_ = false;
           resource_target_.reset();
         } else {
-          return mine();
+          if (fuel() >= specs::mine_fuel_cost) {
+            return mine();
+          } else {
+            return nullAction();
+          }
         }
       } else {
         return pathTowardResource();
@@ -33,6 +37,7 @@ emscripten::val PilgrimRobot::onTurn() {
       return pathTowardCluster();
     }
   }
+
   if (!gathering_) {
     if (!adjacentToDepot()) {
       depot_target_ = chooseDepot();
