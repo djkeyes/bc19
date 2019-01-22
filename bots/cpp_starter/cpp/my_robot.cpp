@@ -41,8 +41,9 @@ class NoOpRobot : public CommonRobot {
 
 unique_ptr<AbstractNativeRobot> AbstractNativeRobot::createNativeRobotImpl(emscripten::val jsAbstractRobot) {
   // Can't use convenience me() method here, because the wrapper class has not been initialized
-  Robot me = Robot::fromSelfRobot(jsAbstractRobot);
-  switch (me.unit()) {
+  auto val = jsAbstractRobot["me"]["unit"];
+  auto unit = val.isUndefined() ? specs::Unit::UNDEFINED : static_cast<specs::Unit>(val.as<int>());
+  switch (unit) {
   case Unit::CASTLE:
     return make_unique<CastleRobot>(jsAbstractRobot);
   case Unit::CHURCH:

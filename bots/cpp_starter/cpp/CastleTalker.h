@@ -106,7 +106,7 @@ class CastleTalker {
     const auto length = visible["length"].as<int>();
     int castle_index = 0;
     for (int i = 0; i < length; ++i) {
-      Robot robot(visible[i]);
+      Robot robot(visible[i], self_);
       // check for team -- enemies show up if visible
       if (self_->isVisible(robot) && robot.team() != self_->me().team()) {
         continue;
@@ -184,7 +184,7 @@ class CastleTalker {
     // reset
     unit_count = UnitCounts();
     for (int i = 0; i < length; ++i) {
-      Robot robot(visible[i]);
+      Robot robot(visible[i], self_);
       // check for team -- enemies show up if visible
       if (self_->isVisible(robot) && robot.team() != self_->me().team()) {
         continue;

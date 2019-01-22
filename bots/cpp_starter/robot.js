@@ -35,7 +35,7 @@ class MyRobot extends BCAbstractRobot {
             nativeRobot = bindings.AbstractNativeRobot.createNativeRobotImpl(this);
         }
 
-        return nativeRobot.turn();
+        return nativeRobot.turnHook();
     }
 
 }

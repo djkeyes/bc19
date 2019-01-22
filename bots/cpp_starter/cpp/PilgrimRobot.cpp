@@ -184,7 +184,7 @@ Coordinate PilgrimRobot::chooseDepot() const {
   int min_dist_sq = -1;
   Coordinate closest_coord(0, 0);
   for (int i = 0; i < length; ++i) {
-    const Robot robot(visible_robots[i]);
+    const Robot robot(visible_robots[i], this);
     if (robot.team() == us) {
       const auto &type = robot.unit();
       if (type == specs::Unit::CASTLE || type == specs::Unit::CHURCH) {

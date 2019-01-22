@@ -48,7 +48,8 @@ void AttackerRobot::parseNearbyUnits() {
   const auto &length = visible_robots["length"].as<int>();
   const auto &us = me().team();
   for (int i = 0; i < length; ++i) {
-    Robot robot(visible_robots[i]);
+    Robot robot(visible_robots[i], this);
+
     if (!isVisible(robot)) {
       continue;
     }
