@@ -4,6 +4,7 @@
 #define CPP_STARTER_COORDINATE_H
 
 #include <cstdint>
+#include <string>
 
 namespace bc19 {
 struct Coordinate {

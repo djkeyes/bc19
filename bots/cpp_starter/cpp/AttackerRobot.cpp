@@ -125,7 +125,6 @@ emscripten::val AttackerRobot::drawValueMaps() {
     tile_versions_.get(tile) = version_;
     tile_values_.get(tile) = 0.;
   }
-  attack_coord_.reset();
 
   {
     double damage_taken = 0;
@@ -137,7 +136,7 @@ emscripten::val AttackerRobot::drawValueMaps() {
       const auto our_dist_sq = my_loc.distSq(their_loc);
 
       // if they can shoot us, the value of staying here is lower
-      if (withinAttackRadius(their_type, our_dist_sq)) {
+      if (attack_.withinAttackRadius(their_type, our_dist_sq, is_castle_under_attack_)) {
         damage_taken += their_specs.attack_damage;
       }
     }
@@ -169,7 +168,7 @@ emscripten::val AttackerRobot::drawValueMaps() {
       const auto &their_specs = specs::units[static_cast<int>(their_type)];
       const auto our_dist_sq = tile.distSq(their_loc);
       // if they can shoot us, the value of staying here is lower
-      if (withinAttackRadius(their_type, our_dist_sq)) {
+      if (attack_.withinAttackRadius(their_type, our_dist_sq, is_castle_under_attack_)) {
         damage_taken += their_specs.attack_damage;
       }
 
@@ -185,7 +184,8 @@ emscripten::val AttackerRobot::drawValueMaps() {
   }
 
   if (can_afford_attacking) {
-    tile_values_.get(my_loc) += computeBestValueAttack(my_type, my_loc);
+    tile_values_.get(my_loc) +=
+        attack_.computeBestValueAttack(my_type, my_loc, pathfinder_, nearby_enemies_, is_castle_under_attack_);
   }
 
   // TODO
@@ -248,155 +248,11 @@ emscripten::val AttackerRobot::drawValueMaps() {
   }
 
   if (best_tile == my_loc) {
-    if (attack_coord_) {
-      const auto offset = *attack_coord_ - my_loc;
-      //      log("attacking by " + std::to_string(offset));
-      return attack(offset.col_, offset.row_);
-    } else {
-      //      log("staying still");
-      return nullAction();
-    }
+    return attack_.createAttackAction();
   } else {
     const auto offset = best_tile - my_loc;
     //    log("moving by " + std::to_string(offset));
     return move(offset.col_, offset.row_);
-  }
-}
-
-double AttackerRobot::computeBestValueAttack(const specs::Unit &my_type, const Coordinate my_loc) {
-  double max_value = std::numeric_limits<double>::lowest();
-  std::optional<Coordinate> best_attack_coord;
-  const auto &my_specs = specs::units[static_cast<int>(my_type)];
-  const auto &us = me().team();
-  if (my_type == specs::Unit::PREACHER) {
-    max_value = 0.f; // don't go shooting if we can't hit something good
-    const auto &visible_robot_map = getVisibleRobotMap();
-    for (const auto &offset : directions::preacher_effective_targets) {
-      double value = 0.;
-      const auto center = my_loc + offset;
-      if (!pathfinder_.onMap(center)) {
-        continue;
-      }
-      for (int dr = -1; dr <= 1; ++dr) {
-        for (int dc = -1; dc <= 1; ++dc) {
-          const auto
-              tile = center + Coordinate(static_cast<Coordinate::DimType>(dr), static_cast<Coordinate::DimType>(dc));
-          if (my_loc.distSq(tile) > my_specs.vision_radius) {
-            continue;
-          }
-          if (!pathfinder_.onMap(tile)) {
-            continue;
-          }
-          int id = visible_robot_map.get(tile.row_, tile.col_);
-          if (id == 0) {
-            continue;
-          }
-          Robot them(getRobot(id));
-
-          double weight;
-          if (them.team() == us) {
-            weight = -3.0;
-          } else {
-            const auto &their_type = them.unit();
-            switch (their_type) {
-            case specs::Unit::CASTLE:
-              weight = 0.5;
-              break;
-            case specs::Unit::CHURCH:
-              weight = 0.1;
-              break;
-            case specs::Unit::PILGRIM:
-              weight = 0.25;
-              break;
-            case specs::Unit::CRUSADER:
-              weight = 1.0;
-              break;
-            case specs::Unit::PROPHET:
-              weight = 1.5;
-              break;
-            case specs::Unit::PREACHER:
-              weight = 2.0;
-              break;
-            case specs::Unit::UNDEFINED:
-              weight = 0.1;
-              break;
-            }
-          }
-          value += weight * my_specs.attack_damage;
-        }
-      }
-      if (value > max_value) {
-        max_value = value;
-        best_attack_coord = center;
-      }
-    }
-  } else {
-    // attack this turn
-    for (const auto &robot : nearby_enemies_) {
-      Coordinate their_loc(static_cast<Coordinate::DimType>(robot.y()), static_cast<Coordinate::DimType>(robot.x()));
-      specs::Unit their_type(robot.unit());
-      const auto our_dist_sq = my_loc.distSq(their_loc);
-
-      // if we can shoot them, the value of standing here is higher
-      if (withinAttackRadius(my_type, our_dist_sq)) {
-        double weight;
-        switch (their_type) {
-        case specs::Unit::CASTLE:
-          weight = 0.5;
-          break;
-        case specs::Unit::CHURCH:
-          weight = 0.1;
-          break;
-        case specs::Unit::PILGRIM:
-          weight = 0.25;
-          break;
-        case specs::Unit::CRUSADER:
-          weight = 1.0;
-          break;
-        case specs::Unit::PROPHET:
-          weight = 1.5;
-          break;
-        case specs::Unit::PREACHER:
-          weight = 2.0;
-          break;
-        case specs::Unit::UNDEFINED:
-          weight = 0.1;
-          break;
-        }
-        double value = weight * my_specs.attack_damage;
-        if (value > max_value) {
-          max_value = value;
-          best_attack_coord = their_loc;
-        }
-      }
-    }
-  }
-
-  attack_coord_ = best_attack_coord;
-  return max_value;
-}
-
-double AttackerRobot::computeBestValueNextAttack(const specs::Unit &my_type, const Coordinate tile) {
-  // TODO: attack next turn; assume opponent remove all but the strongest unit
-  // for now, assume they just retreat and we can do nothing
-  return 0.;
-}
-
-bool AttackerRobot::withinAttackRadius(const specs::Unit &unit, const Coordinate::DimSqType &sq) {
-  const auto &range = specs::units[static_cast<int>(unit)].attack_radius;
-  switch (unit) {
-  case specs::Unit::CRUSADER:
-  case specs::Unit::PROPHET:
-    return range[0] <= sq && sq <= range[1];
-  case specs::Unit::PREACHER:
-    // extra cautious if we're a ranger and they're a preacher
-    if (me().unit() == specs::Unit::PROPHET && !is_castle_under_attack_) {
-      return range[0] <= sq && sq <= 36;
-    } else {
-      return range[0] <= sq && sq <= directions::preacher_effective_max_radius;
-    }
-  default:
-    return false;
   }
 }
 

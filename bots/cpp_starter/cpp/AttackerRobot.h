@@ -6,6 +6,7 @@
 #include "CommonRobot.h"
 #include "Pathfinder.h"
 #include "MapSymmetry.h"
+#include "OffensiveAttack.h"
 
 namespace bc19 {
 
@@ -22,7 +23,8 @@ class AttackerRobot : public CommonRobot {
   Grid<double> tile_values_;
   Grid<uint8_t> tile_versions_;
   uint8_t version_;
-  std::optional<Coordinate> attack_coord_;
+
+  OffensiveAttack attack_;
 
   int cluster_index_ = 0;
   int turns_pathing_ = 0;
@@ -36,7 +38,8 @@ class AttackerRobot : public CommonRobot {
       pathfinder_(this),
       symmetry_(pathfinder_),
       is_castle_under_attack_(false),
-      version_(1) {
+      version_(1),
+      attack_(this) {
     const auto &map = getPassableMap();
     tile_values_.resize(map.rows(), map.cols());
     tile_versions_.resize(map.rows(), map.cols());
@@ -45,9 +48,6 @@ class AttackerRobot : public CommonRobot {
   }
 
   emscripten::val onTurn() override;
-  bool withinAttackRadius(const specs::Unit &unit, const Coordinate::DimSqType &sq);
-  double computeBestValueAttack(const specs::Unit &my_type, Coordinate my_loc);
-  double computeBestValueNextAttack(const specs::Unit &my_type, Coordinate tile);
 };
 }
 #endif //CPP_STARTER_ATTACKERROBOT_H
