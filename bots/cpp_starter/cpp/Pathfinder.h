@@ -29,11 +29,6 @@ class Pathfinder {
   // profile this.
   GridChar passable_map_;
 
-  // Only does a single step of best-first-search. Avoid using this if feasible.
-  emscripten::val singlePassPathfind(const Coordinate &from,
-                                     const Coordinate &to,
-                                     Coordinate::DimSqType max_radius_sq) const;
-
   /**
    * Do a bfs, assuming we can only travel in cardinal directions. If `allow_diagonals`, we wil also return a
    * diagonal move if it's available.
